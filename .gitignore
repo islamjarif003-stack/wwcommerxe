@@ -30,8 +30,13 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# env files — keep .env.example, ignore everything else
+.env
+.env.local
+.env.development
+.env.production
+# Allow template:
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +44,17 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# prisma
+/src/generated/prisma
+
+# Docker SSL certs (never commit private keys)
+docker/nginx/ssl/
+
+# Uploaded user files
+/public/uploads/
+
+# Temp / debug scripts
+check-*.js
+clean-*.js
+tmp-*.js
