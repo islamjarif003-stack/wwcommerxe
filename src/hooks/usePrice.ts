@@ -2,11 +2,20 @@ import { useCurrencyStore } from "@/store/currencyStore";
 import { useEffect, useState } from "react";
 
 export function usePrice() {
-    const { currency, setCurrency, exchangeRate } = useCurrencyStore();
+    const { currency, setCurrency, exchangeRate, setExchangeRate } = useCurrencyStore();
     const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
         setMounted(true);
+        // Fetch the admin-configured exchange rate from DB
+        fetch("/api/settings/exchange-rate")
+            .then(r => r.json())
+            .then(data => {
+                if (data.success && data.rate) {
+                    setExchangeRate(data.rate);
+                }
+            })
+            .catch(() => { });
     }, []);
 
     const formatPrice = (priceInBdt: number | string | undefined | null) => {

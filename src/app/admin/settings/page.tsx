@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AdminShell } from "@/components/AdminShell";
 import {
     Store, Truck, Bell, Shield, Save, Upload,
@@ -9,6 +9,7 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import { usePrice } from "@/hooks/usePrice";
 import { useCurrencyStore } from "@/store/currencyStore";
+import { useAuthStore } from "@/store/authStore";
 
 /* ─────────────────── types ─────────────────── */
 interface StoreSettings {
@@ -178,6 +179,7 @@ const TABS = [
 export default function SettingsPage() {
     const { formatPrice } = usePrice();
     const { exchangeRate: globalExchangeRate, setExchangeRate } = useCurrencyStore();
+    const { token } = useAuthStore();
     const [activeTab, setActiveTab] = useState("store");
     const [saving, setSaving] = useState(false);
 
@@ -187,16 +189,49 @@ export default function SettingsPage() {
     const [notif, setNotif] = useState<NotifSettings>(DEFAULT_NOTIF);
     const [security, setSecurity] = useState<SecuritySettings>(DEFAULT_SECURITY);
 
+    // Fetch exchange rate from DB on mount
+    useEffect(() => {
+        fetch("/api/settings/exchange-rate")
+            .then(r => r.json())
+            .then(data => {
+                if (data.success && data.rate) {
+                    setStore(s => ({ ...s, exchangeRate: data.rate }));
+                    setExchangeRate(data.rate);
+                }
+            })
+            .catch(() => { });
+    }, []);
+
     const handleSave = async () => {
         setSaving(true);
-        await new Promise(r => setTimeout(r, 800));
-        if (store.exchangeRate) setExchangeRate(store.exchangeRate);
+        try {
+            // Save exchange rate to database via API
+            if (store.exchangeRate) {
+                const res = await fetch("/api/settings/exchange-rate", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+                    },
+                    body: JSON.stringify({ rate: store.exchangeRate }),
+                });
+                const data = await res.json();
+                if (!data.success) {
+                    toast.error(data.message || "Failed to save exchange rate");
+                    setSaving(false);
+                    return;
+                }
+                setExchangeRate(store.exchangeRate);
+            }
+            toast.success("Settings saved successfully!", {
+                duration: 3000,
+                style: { background: "#13131f", color: "#f0f0fa", border: "1px solid rgba(99,102,241,0.3)" },
+                iconTheme: { primary: "#6366f1", secondary: "white" },
+            });
+        } catch (err) {
+            toast.error("Failed to save settings");
+        }
         setSaving(false);
-        toast.success("Settings saved successfully!", {
-            duration: 3000,
-            style: { background: "#13131f", color: "#f0f0fa", border: "1px solid rgba(99,102,241,0.3)" },
-            iconTheme: { primary: "#6366f1", secondary: "white" },
-        });
     };
 
     return (
