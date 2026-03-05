@@ -5,6 +5,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import { ProductCard } from "@/components/ProductCard";
 import { ChevronRight, Filter, Grid3x3, List, SlidersHorizontal, X, Package } from "lucide-react";
+import { usePrice } from "@/hooks/usePrice";
 
 const SORT_OPTIONS = [
     { value: "newest", label: "Newest First" },
@@ -17,6 +18,7 @@ const SORT_OPTIONS = [
 const LIMIT = 24;
 
 export default function CategoryPage() {
+    const { formatPrice } = usePrice();
     const params = useParams();
     const router = useRouter();
     const slug = params.slug as string;
@@ -280,12 +282,12 @@ function FilterPanel({ minPrice, maxPrice, setMinPrice, setMaxPrice, onApply }: 
             </h3>
             <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
                 <input
-                    type="number" placeholder="Min $ / ৳" value={minPrice}
+                    type="number" placeholder="Min ৳" value={minPrice}
                     onChange={e => setMinPrice(e.target.value)}
                     className="input-field" style={{ fontSize: "13px" }}
                 />
                 <input
-                    type="number" placeholder="Max $ / ৳" value={maxPrice}
+                    type="number" placeholder="Max ৳" value={maxPrice}
                     onChange={e => setMaxPrice(e.target.value)}
                     className="input-field" style={{ fontSize: "13px" }}
                 />

@@ -8,6 +8,7 @@ import {
     MoreVertical, Mail, Phone, Calendar,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import { usePrice } from "@/hooks/usePrice";
 
 const ROLE_BADGE: Record<string, { label: string; color: string; bg: string }> = {
     superadmin: { label: "Super Admin", color: "#f43f5e", bg: "rgba(244,63,94,0.12)" },
@@ -22,6 +23,7 @@ const ROLE_ICON: Record<string, any> = {
 };
 
 export default function AdminUsersPage() {
+    const { formatPrice } = usePrice();
     const [users, setUsers] = useState<any[]>([]);
     const [filtered, setFiltered] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -96,7 +98,7 @@ export default function AdminUsersPage() {
                         { label: "Total Users", value: stats.total, icon: Users, color: "#6366f1" },
                         { label: "Admins", value: stats.admins, icon: Shield, color: "#f43f5e" },
                         { label: "Customers", value: stats.customers, icon: User, color: "#10b981" },
-                        { label: "Total Revenue", value: `$ / ৳${stats.totalRevenue.toLocaleString()}`, icon: TrendingUp, color: "#f59e0b" },
+                        { label: "Total Revenue", value: formatPrice(stats.totalRevenue.toLocaleString()), icon: TrendingUp, color: "#f59e0b" },
                     ].map(s => {
                         const Icon = s.icon;
                         return (
@@ -264,7 +266,7 @@ export default function AdminUsersPage() {
                                             {/* Spent */}
                                             <td style={{ padding: "14px 16px" }}>
                                                 <span style={{ fontSize: "13px", fontWeight: 700, color: (user.totalSpent || 0) > 0 ? "#a5b4fc" : "var(--text-muted)" }}>
-                                                    $ / ৳{(user.totalSpent || 0).toLocaleString()}
+                                                    {formatPrice((user.totalSpent || 0).toLocaleString())}
                                                 </span>
                                             </td>
 

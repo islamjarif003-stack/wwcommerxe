@@ -6,8 +6,10 @@ import { Package, Plus, Search, Edit, Trash2, Eye, TrendingUp, AlertTriangle, Up
 import toast from "react-hot-toast";
 import Link from "next/link";
 import { useAuthStore } from "@/store/authStore";
+import { usePrice } from "@/hooks/usePrice";
 
 export default function AdminProductsPage() {
+    const { formatPrice } = usePrice();
     const [products, setProducts] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
     const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
@@ -261,8 +263,8 @@ export default function AdminProductsPage() {
                                     <td><span className="font-mono text-xs text-[var(--primary)]">{p.sku}</span></td>
                                     <td>
                                         <div>
-                                            <p className="font-bold text-[var(--text-primary)] text-sm">$ / ৳{p.basePrice.toLocaleString()}</p>
-                                            {p.comparePrice && <p className="text-xs text-[var(--text-muted)] line-through">$ / ৳{p.comparePrice.toLocaleString()}</p>}
+                                            <p className="font-bold text-[var(--text-primary)] text-sm">{formatPrice(p.basePrice.toLocaleString())}</p>
+                                            {p.comparePrice && <p className="text-xs text-[var(--text-muted)] line-through">{formatPrice(p.comparePrice.toLocaleString())}</p>}
                                         </div>
                                     </td>
                                     <td>
@@ -351,11 +353,11 @@ export default function AdminProductsPage() {
                                     <input className="input-field text-sm" required value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} />
                                 </div>
                                 <div>
-                                    <label className="block text-xs text-[var(--text-muted)] mb-1">Base Price ($ / ৳) *</label>
+                                    <label className="block text-xs text-[var(--text-muted)] mb-1">Base Price (৳) *</label>
                                     <input className="input-field text-sm" required type="number" value={form.basePrice} onChange={(e) => setForm({ ...form, basePrice: e.target.value })} />
                                 </div>
                                 <div>
-                                    <label className="block text-xs text-[var(--text-muted)] mb-1">Compare Price ($ / ৳)</label>
+                                    <label className="block text-xs text-[var(--text-muted)] mb-1">Compare Price (৳)</label>
                                     <input className="input-field text-sm" type="number" value={form.comparePrice} onChange={(e) => setForm({ ...form, comparePrice: e.target.value })} />
                                 </div>
                                 <div>

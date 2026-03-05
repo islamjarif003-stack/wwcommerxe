@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
 import { CartDrawer } from "./CartDrawer";
+import { usePrice } from "@/hooks/usePrice";
 
 const NAV_LINKS = [
     { label: "Home", href: "/" },
@@ -15,6 +16,7 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
+    const { formatPrice, currency, setCurrency } = usePrice();
     const pathname = usePathname();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [searchOpen, setSearchOpen] = useState(false);
@@ -87,7 +89,7 @@ export default function Navbar() {
                         textAlign: "center", fontWeight: 600,
                         color: "white", letterSpacing: "0.3px",
                     }}>
-                        <span>🚀 <span className="hide-on-mobile" style={{ margin: "0 4px" }}>Free delivery on orders over $ / ৳1,000 ·</span> Dhaka same-day · 64 districts</span>
+                        <span>🚀 <span className="hide-on-mobile" style={{ margin: "0 4px" }}>Free delivery on orders over {formatPrice(1)},000 ·</span> Dhaka same-day · 64 districts</span>
                     </div>
                 )}
 
@@ -192,6 +194,21 @@ export default function Navbar() {
                                 </button>
                             )}
 
+                            {/* Currency Toggle */}
+                            {mounted && (
+                                <button onClick={() => setCurrency(currency === "BDT" ? "USD" : "BDT")} style={{
+                                    height: "38px", padding: "0 10px", display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+                                    background: "transparent", border: "1px solid var(--border)", borderRadius: "10px",
+                                    color: "var(--text-primary)", fontSize: "14px", fontWeight: 700, cursor: "pointer", transition: "all 0.2s",
+                                }}
+                                    onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--primary)"; }}
+                                    onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border)"; }}>
+                                    <span style={{ color: currency === "BDT" ? "var(--primary)" : "var(--text-muted)" }}>৳</span>
+                                    <span style={{ color: "var(--border)", fontWeight: 400 }}>|</span>
+                                    <span style={{ color: currency === "USD" ? "var(--primary)" : "var(--text-muted)" }}>$</span>
+                                </button>
+                            )}
+
                             {/* Cart */}
                             <button onClick={toggleCart} style={{
                                 width: "38px", height: "38px", display: "flex", alignItems: "center", justifyContent: "center",
@@ -278,7 +295,7 @@ export default function Navbar() {
                                                             display: "flex", alignItems: "center", justifyContent: "space-between",
                                                         }}>
                                                             <span style={{ fontSize: "11px", color: "var(--text-secondary)" }}>Loyalty Points</span>
-                                                            <span style={{ fontSize: "13px", fontWeight: 800, color: "var(--warn)" }}>$ / ৳ {user.loyaltyPoints}</span>
+                                                            <span style={{ fontSize: "13px", fontWeight: 800, color: "var(--warn)" }}>৳ {user.loyaltyPoints}</span>
                                                         </div>
                                                     )}
                                                 </div>

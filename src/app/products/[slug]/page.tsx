@@ -10,8 +10,10 @@ import { useCartStore } from "@/store/cartStore";
 import { api } from "@/lib/apiClient";
 import toast from "react-hot-toast";
 import Link from "next/link";
+import { usePrice } from "@/hooks/usePrice";
 
 export default function ProductDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { formatPrice } = usePrice();
     const { slug } = use(params);
 
     // ── ALL HOOKS MUST BE AT TOP LEVEL (no conditional hooks!) ──
@@ -293,11 +295,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                             flexWrap: "wrap",
                         }}>
                             <span style={{ fontSize: "38px", fontWeight: 900, color: "var(--text-primary)" }}>
-                                $ / ৳{currentPrice.toLocaleString()}
+                                {formatPrice(currentPrice.toLocaleString())}
                             </span>
                             {product.comparePrice && (
                                 <span style={{ fontSize: "20px", color: "var(--text-muted)", textDecoration: "line-through" }}>
-                                    $ / ৳{product.comparePrice.toLocaleString()}
+                                    {formatPrice(product.comparePrice.toLocaleString())}
                                 </span>
                             )}
                             {discount > 0 && (

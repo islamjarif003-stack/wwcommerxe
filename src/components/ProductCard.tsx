@@ -5,6 +5,7 @@ import { ShoppingCart, Star, TrendingUp, Heart, Eye } from "lucide-react";
 import { useState } from "react";
 import { useCartStore } from "@/store/cartStore";
 import toast from "react-hot-toast";
+import { usePrice } from "@/hooks/usePrice";
 
 interface ProductCardProps {
     product: {
@@ -28,6 +29,7 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+    const { formatPrice } = usePrice();
     const { addItem } = useCartStore();
     const router = useRouter();
     const [imgLoaded, setImgLoaded] = useState(false);
@@ -255,11 +257,11 @@ export function ProductCard({ product }: ProductCardProps) {
                     {/* Price row */}
                     <div style={{ display: "flex", alignItems: "center", gap: "7px", flexWrap: "wrap", marginTop: "auto" }}>
                         <span style={{ fontSize: "16px", fontWeight: 800, color: "var(--text-primary)" }}>
-                            $ / ৳{product.basePrice.toLocaleString()}
+                            {formatPrice(product.basePrice.toLocaleString())}
                         </span>
                         {product.comparePrice && (
                             <span style={{ fontSize: "12px", color: "var(--text-muted)", textDecoration: "line-through" }}>
-                                $ / ৳{product.comparePrice.toLocaleString()}
+                                {formatPrice(product.comparePrice.toLocaleString())}
                             </span>
                         )}
                         {discount > 0 && (

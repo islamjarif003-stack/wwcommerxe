@@ -6,6 +6,7 @@ import { api } from "@/lib/apiClient";
 import { useAuthStore } from "@/store/authStore";
 import { Package, Clock, CheckCircle, Truck, XCircle, ChevronRight, User, ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import { usePrice } from "@/hooks/usePrice";
 
 const STATUS_CONFIG: Record<string, { color: string; bg: string; icon: any; label: string }> = {
     PENDING: { color: "#fbbf24", bg: "rgba(251,191,36,0.15)", icon: Clock, label: "Pending" },
@@ -18,6 +19,7 @@ const STATUS_CONFIG: Record<string, { color: string; bg: string; icon: any; labe
 };
 
 export default function MyOrdersPage() {
+    const { formatPrice } = usePrice();
     const { user, token } = useAuthStore();
     const router = useRouter();
     const [orders, setOrders] = useState<any[]>([]);
@@ -142,7 +144,7 @@ export default function MyOrdersPage() {
 
                                                 <div style={{ textAlign: "right" }}>
                                                     <div style={{ fontSize: "18px", fontWeight: 800, color: "white", marginBottom: "4px" }}>
-                                                        $ / ৳{order.total.toLocaleString()}
+                                                        {formatPrice(order.total.toLocaleString())}
                                                     </div>
                                                     <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600, textTransform: "uppercase" }}>
                                                         {order.paymentMethod?.toLowerCase() === "cod" ? "Cash on Delivery" : "Digital Payment"}

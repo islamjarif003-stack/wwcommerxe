@@ -9,8 +9,10 @@ import { ShoppingCart, Truck, CreditCard, CheckCircle, ArrowLeft, Package } from
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { usePrice } from "@/hooks/usePrice";
 
 function CheckoutContent() {
+    const { formatPrice } = usePrice();
     const { items, total, clearCart } = useCartStore();
     const cartTotal = useCartStore((s) => s.total());
     const itemCount = useCartStore((s) => s.itemCount());
@@ -108,7 +110,7 @@ function CheckoutContent() {
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-[var(--text-muted)]">Total Amount</span>
-                                <span className="font-bold text-[var(--text-primary)]">$ / ৳{orderPlaced.total.toLocaleString()}</span>
+                                <span className="font-bold text-[var(--text-primary)]">{formatPrice(orderPlaced.total.toLocaleString())}</span>
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-[var(--text-muted)]">Payment</span>
@@ -215,7 +217,7 @@ function CheckoutContent() {
                                         {delivery.isFreeDelivery ? (
                                             <span className="badge badge-success text-sm font-bold">FREE</span>
                                         ) : (
-                                            <span className="text-[var(--text-primary)] font-bold">$ / ৳{delivery.charge}</span>
+                                            <span className="text-[var(--text-primary)] font-bold">{formatPrice(delivery.charge)}</span>
                                         )}
                                     </div>
                                 )}
@@ -284,7 +286,7 @@ function CheckoutContent() {
                                                 {item.attributes && <p className="text-xs text-[var(--text-muted)]">{Object.values(item.attributes).join(", ")}</p>}
                                                 <p className="text-xs text-[var(--text-muted)]">×{item.quantity}</p>
                                             </div>
-                                            <p className="text-sm font-bold text-[var(--text-primary)] flex-shrink-0">$ / ৳{item.totalPrice.toLocaleString()}</p>
+                                            <p className="text-sm font-bold text-[var(--text-primary)] flex-shrink-0">{formatPrice(item.totalPrice.toLocaleString())}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -300,19 +302,19 @@ function CheckoutContent() {
                                 <div className="border-t border-[var(--border)] pt-4 space-y-2">
                                     <div className="flex justify-between text-sm">
                                         <span className="text-[var(--text-muted)]">Subtotal ({itemCount} items)</span>
-                                        <span className="text-[var(--text-primary)]">$ / ৳{cartTotal.toLocaleString()}</span>
+                                        <span className="text-[var(--text-primary)]">{formatPrice(cartTotal.toLocaleString())}</span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-[var(--text-muted)]">Delivery</span>
                                         {delivery?.isFreeDelivery ? (
                                             <span className="text-emerald-400 font-semibold">FREE</span>
                                         ) : (
-                                            <span className="text-[var(--text-primary)]">$ / ৳{deliveryCharge}</span>
+                                            <span className="text-[var(--text-primary)]">{formatPrice(deliveryCharge)}</span>
                                         )}
                                     </div>
                                     <div className="flex justify-between text-lg font-bold pt-2 border-t border-[var(--border)]">
                                         <span className="text-[var(--text-primary)]">Total</span>
-                                        <span className="gradient-text">$ / ৳{finalTotal.toLocaleString()}</span>
+                                        <span className="gradient-text">{formatPrice(finalTotal.toLocaleString())}</span>
                                     </div>
                                 </div>
 
@@ -321,7 +323,7 @@ function CheckoutContent() {
                                     disabled={isPlacing}
                                     className="btn-primary w-full justify-center py-4 text-base mt-6 disabled:opacity-60"
                                 >
-                                    {isPlacing ? "Placing Order..." : `Place Order • $ / ৳${finalTotal.toLocaleString()}`}
+                                    {isPlacing ? "Placing Order..." : `Place Order • ${formatPrice(finalTotal.toLocaleString())}`}
                                 </button>
 
                                 <p className="text-xs text-center text-[var(--text-muted)] mt-3">

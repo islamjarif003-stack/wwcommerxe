@@ -7,6 +7,8 @@ import {
     ToggleLeft, ToggleRight, ChevronRight, Info, CheckCircle,
 } from "lucide-react";
 import toast, { Toaster } from "react-hot-toast";
+import { usePrice } from "@/hooks/usePrice";
+import { useCurrencyStore } from "@/store/currencyStore";
 
 /* ─────────────────── types ─────────────────── */
 interface StoreSettings {
@@ -19,6 +21,7 @@ interface StoreSettings {
     currency: string;
     timezone: string;
     logoUrl: string;
+    exchangeRate?: number;
 }
 
 interface DeliverySettings {
@@ -61,6 +64,7 @@ const DEFAULT_STORE: StoreSettings = {
     currency: "BDT",
     timezone: "Asia/Dhaka",
     logoUrl: "",
+    exchangeRate: 120,
 };
 
 const DEFAULT_DELIVERY: DeliverySettings = {
@@ -172,11 +176,13 @@ const TABS = [
 
 /* ─────────────────── Main Page ─────────────────── */
 export default function SettingsPage() {
+    const { formatPrice } = usePrice();
+    const { exchangeRate: globalExchangeRate, setExchangeRate } = useCurrencyStore();
     const [activeTab, setActiveTab] = useState("store");
     const [saving, setSaving] = useState(false);
 
     // State per section
-    const [store, setStore] = useState<StoreSettings>(DEFAULT_STORE);
+    const [store, setStore] = useState<StoreSettings>({ ...DEFAULT_STORE, exchangeRate: globalExchangeRate });
     const [delivery, setDelivery] = useState<DeliverySettings>(DEFAULT_DELIVERY);
     const [notif, setNotif] = useState<NotifSettings>(DEFAULT_NOTIF);
     const [security, setSecurity] = useState<SecuritySettings>(DEFAULT_SECURITY);
@@ -184,6 +190,7 @@ export default function SettingsPage() {
     const handleSave = async () => {
         setSaving(true);
         await new Promise(r => setTimeout(r, 800));
+        if (store.exchangeRate) setExchangeRate(store.exchangeRate);
         setSaving(false);
         toast.success("Settings saved successfully!", {
             duration: 3000,
@@ -285,10 +292,17 @@ export default function SettingsPage() {
                         <SectionCard title="Locale" icon={Globe}>
                             <FieldRow label="Currency" hint="Primary currency for pricing">
                                 <select value={store.currency} onChange={e => setStore(s => ({ ...s, currency: e.target.value }))} className="input-field" style={{ cursor: "pointer" }}>
-                                    <option value="BDT">BDT — Bangladeshi Taka ($ / ৳)</option>
+                                    <option value="BDT">BDT — Bangladeshi Taka (৳)</option>
                                     <option value="USD">USD — US Dollar ($)</option>
                                     <option value="EUR">EUR — Euro (€)</option>
                                 </select>
+                            </FieldRow>
+                            <FieldRow label="Exchange Rate" hint="Set how much 1 USD equals in BDT (৳)">
+                                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                    <span style={{ fontSize: "15px", color: "var(--text-muted)", fontWeight: 700 }}>$1 =</span>
+                                    <Input value={store.exchangeRate || 120} onChange={v => setStore(s => ({ ...s, exchangeRate: Number(v) }))} type="number" placeholder="120" />
+                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>৳</span>
+                                </div>
                             </FieldRow>
                             <FieldRow label="Timezone">
                                 <select value={store.timezone} onChange={e => setStore(s => ({ ...s, timezone: e.target.value }))} className="input-field" style={{ cursor: "pointer" }}>
@@ -307,19 +321,19 @@ export default function SettingsPage() {
                         <SectionCard title="Delivery Charges" icon={Truck}>
                             <FieldRow label="Inside Dhaka" hint="Delivery fee in BDT">
                                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>$ / ৳</span>
+                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>৳</span>
                                     <Input value={delivery.insideDhaka} onChange={v => setDelivery(s => ({ ...s, insideDhaka: +v }))} type="number" placeholder="60" />
                                 </div>
                             </FieldRow>
                             <FieldRow label="Outside Dhaka" hint="Delivery fee for other districts">
                                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>$ / ৳</span>
+                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>৳</span>
                                     <Input value={delivery.outsideDhaka} onChange={v => setDelivery(s => ({ ...s, outsideDhaka: +v }))} type="number" placeholder="120" />
                                 </div>
                             </FieldRow>
                             <FieldRow label="Free Delivery Threshold" hint="Orders above this amount get free delivery">
                                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>$ / ৳</span>
+                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>৳</span>
                                     <Input value={delivery.freeDeliveryThreshold} onChange={v => setDelivery(s => ({ ...s, freeDeliveryThreshold: +v }))} type="number" placeholder="1000" />
                                 </div>
                             </FieldRow>

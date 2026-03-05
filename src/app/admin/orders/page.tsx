@@ -5,6 +5,7 @@ import { api } from "@/lib/apiClient";
 import { ShoppingBag, Search, Eye, ChevronDown, AlertTriangle, Truck } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import { usePrice } from "@/hooks/usePrice";
 
 const STATUS_OPTIONS = ["", "pending", "confirmed", "processing", "shipped", "delivered", "cancelled", "returned"];
 const STATUS_COLORS: Record<string, string> = {
@@ -13,6 +14,7 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 export default function AdminOrdersPage() {
+    const { formatPrice } = usePrice();
     const [orders, setOrders] = useState<any[]>([]);
     const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
     const [isLoading, setIsLoading] = useState(true);
@@ -150,7 +152,7 @@ export default function AdminOrdersPage() {
                                             </div>
                                         </td>
                                         <td className="text-xs text-[var(--text-muted)]">{order.items.length} item(s)</td>
-                                        <td className="font-semibold text-[var(--text-primary)]">$ / ৳{order.total.toLocaleString()}</td>
+                                        <td className="font-semibold text-[var(--text-primary)]">{formatPrice(order.total.toLocaleString())}</td>
                                         <td>
                                             <span className="badge badge-ghost text-[10px] uppercase">{order.paymentMethod}</span>
                                         </td>
@@ -226,14 +228,14 @@ export default function AdminOrdersPage() {
                                     {item.image && <img src={item.image} alt={item.name} className="w-10 h-10 rounded-lg object-cover" />}
                                     <div className="flex-1">
                                         <p className="text-sm text-[var(--text-primary)]">{item.name}</p>
-                                        <p className="text-xs text-[var(--text-muted)]">×{item.quantity} · $ / ৳{item.unitPrice.toLocaleString()} each</p>
+                                        <p className="text-xs text-[var(--text-muted)]">×{item.quantity} · {formatPrice(item.unitPrice.toLocaleString())} each</p>
                                     </div>
-                                    <p className="font-bold text-[var(--text-primary)] text-sm">$ / ৳{item.totalPrice.toLocaleString()}</p>
+                                    <p className="font-bold text-[var(--text-primary)] text-sm">{formatPrice(item.totalPrice.toLocaleString())}</p>
                                 </div>
                             ))}
                             <div className="flex justify-between text-sm font-bold mt-3 pt-3 border-t border-[var(--border)]">
                                 <span className="text-[var(--text-muted)]">Total</span>
-                                <span className="text-[var(--text-primary)]">$ / ৳{selected.total.toLocaleString()}</span>
+                                <span className="text-[var(--text-primary)]">{formatPrice(selected.total.toLocaleString())}</span>
                             </div>
                         </div>
 

@@ -232,7 +232,7 @@ async function analyzePricing(): Promise<PriceInsight[]> {
             productName: p.name,
             currentPrice: p.basePrice,
             suggestedPrice: p.basePrice,
-            reason: `No discount shown on $ / ৳${p.basePrice.toLocaleString()} item. Adding a 'was' price creates urgency. Set comparePrice = $ / ৳${Math.round(p.basePrice * 1.25).toLocaleString()} to show savings.`,
+            reason: `No discount shown on ৳${p.basePrice.toLocaleString()} item. Adding a 'was' price creates urgency. Set comparePrice = ৳${Math.round(p.basePrice * 1.25).toLocaleString()} to show savings.`,
             expectedRevenueLift: 20,
             confidence: 68,
         });
@@ -385,7 +385,7 @@ async function segmentCustomers(): Promise<CustomerSegment[]> {
             CHAMPIONS: "Give VIP discount + early access to new arrivals",
             LOYAL: "Loyalty points reward + referral program invite",
             AT_RISK: "Win-back campaign: 20% off for next 72 hours",
-            LOST: "Last-chance email: '$ / ৳200 credit waiting for you'",
+            LOST: "Last-chance email: '৳200 credit waiting for you'",
             NEW: "Welcome series: product guides + first reorder discount",
             PROMISING: "Upsell: show complementary products at checkout",
         };
@@ -450,7 +450,7 @@ export async function generateAISuggestions(): Promise<{ generated: number; sugg
         suggestions.push({
             type: "marketing",
             title: `⚠️ Revenue dropped ${Math.abs(revenueGrowth).toFixed(0)}% vs last month`,
-            description: `Revenue fell from $ / ৳${prevRevenue.toLocaleString()} to $ / ৳${currentRevenue.toLocaleString()}. Action: 1) Email re-engagement campaign for inactive customers 2) Flash sale on bestsellers 3) Reduce friction in checkout.`,
+            description: `Revenue fell from ৳${prevRevenue.toLocaleString()} to ৳${currentRevenue.toLocaleString()}. Action: 1) Email re-engagement campaign for inactive customers 2) Flash sale on bestsellers 3) Reduce friction in checkout.`,
             impact: "high",
             confidence: 88,
             data: { currentRevenue, prevRevenue, revenueGrowth },
@@ -474,7 +474,7 @@ export async function generateAISuggestions(): Promise<{ generated: number; sugg
         suggestions.push({
             type: "delivery",
             title: `🚨 High COD risk average: ${Number(cod.avgRisk).toFixed(0)}/100`,
-            description: `${cod.count} COD orders avg risk ${Number(cod.avgRisk).toFixed(0)}. Action: Require phone OTP for COD orders over $ / ৳3,000. Offer $ / ৳50 bKash discount to reduce COD preference. Est. fraud reduction: 35%.`,
+            description: `${cod.count} COD orders avg risk ${Number(cod.avgRisk).toFixed(0)}. Action: Require phone OTP for COD orders over ৳3,000. Offer ৳50 bKash discount to reduce COD preference. Est. fraud reduction: 35%.`,
             impact: "high",
             confidence: 82,
             data: { codOrders: Number(cod.count), avgRisk: Number(cod.avgRisk) },
@@ -502,7 +502,7 @@ export async function generateAISuggestions(): Promise<{ generated: number; sugg
         suggestions.push({
             type: "ui",
             title: `🔥 ${top.name} is trending — promote it on homepage`,
-            description: `${top.name} generated $ / ৳${Number(top.revenue).toLocaleString()} in the last 7 days. Pin it as the first category card on homepage and create a dedicated banner. Also add "${top.name} Sale" to the hero carousel.`,
+            description: `${top.name} generated ৳${Number(top.revenue).toLocaleString()} in the last 7 days. Pin it as the first category card on homepage and create a dedicated banner. Also add "${top.name} Sale" to the hero carousel.`,
             impact: "medium",
             confidence: 78,
             data: { categoryId: top.id, categoryName: top.name, weeklyRevenue: Number(top.revenue) },
@@ -518,8 +518,8 @@ export async function generateAISuggestions(): Promise<{ generated: number; sugg
         const potentialLoss = stockouts * avgOrderValue * 0.3;
         suggestions.push({
             type: "inventory",
-            title: `📦 ${stockouts} products out of stock — est. $ / ৳${potentialLoss.toLocaleString()} monthly loss`,
-            description: `Based on average order value $ / ৳${avgOrderValue.toFixed(0)} and 30% rate of customers not substituting. Priority restock: sort by highest demand score. Set minimum stock alerts (we recommend threshold = 30-day sales velocity × 1.5).`,
+            title: `📦 ${stockouts} products out of stock — est. ৳${potentialLoss.toLocaleString()} monthly loss`,
+            description: `Based on average order value ৳${avgOrderValue.toFixed(0)} and 30% rate of customers not substituting. Priority restock: sort by highest demand score. Set minimum stock alerts (we recommend threshold = 30-day sales velocity × 1.5).`,
             impact: "high",
             confidence: 85,
             data: { stockouts, potentialMonthlyLoss: potentialLoss },
@@ -555,8 +555,8 @@ export async function generateAISuggestions(): Promise<{ generated: number; sugg
     if (avgOrder > 0 && avgOrder < 800) {
         suggestions.push({
             type: "marketing",
-            title: `💡 Average order $ / ৳${avgOrder.toFixed(0)} — upsell to hit $ / ৳1,000 free delivery`,
-            description: `Set free delivery threshold at $ / ৳1,000 (currently uncapped). Show "Add $ / ৳${Math.round(1000 - avgOrder)} more for FREE delivery" in cart. Also: add bundle deals and "frequently bought together" at checkout. Est. AOV lift: 20–35%.`,
+            title: `💡 Average order ৳${avgOrder.toFixed(0)} — upsell to hit ৳1,000 free delivery`,
+            description: `Set free delivery threshold at ৳1,000 (currently uncapped). Show "Add ৳${Math.round(1000 - avgOrder)} more for FREE delivery" in cart. Also: add bundle deals and "frequently bought together" at checkout. Est. AOV lift: 20–35%.`,
             impact: "medium",
             confidence: 76,
             data: { currentAOV: avgOrder, targetAOV: 1000 },

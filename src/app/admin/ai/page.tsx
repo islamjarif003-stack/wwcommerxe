@@ -9,6 +9,7 @@ import {
     Target, ShoppingBag, Activity, Sparkles
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { usePrice } from "@/hooks/usePrice";
 
 // ── Tabs ─────────────────────────────────────────────────────
 const TABS = [
@@ -56,6 +57,7 @@ function Card({ children, style = {} }: { children: React.ReactNode; style?: Rea
 }
 
 export default function AIPage() {
+    const { formatPrice } = usePrice();
     const [activeTab, setActiveTab] = useState("suggestions");
     const [data, setData] = useState<any>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -315,14 +317,14 @@ export default function AIPage() {
                                 <div style={{ display: "flex", gap: "12px", margin: "10px 0", flexWrap: "wrap" }}>
                                     <div style={{ background: "var(--bg-elevated)", borderRadius: "8px", padding: "8px 14px" }}>
                                         <div style={{ fontSize: "11px", color: "var(--text-muted)" }}>Current</div>
-                                        <div style={{ fontSize: "18px", fontWeight: 800, color: "var(--text-primary)" }}>$ / ৳{item.currentPrice?.toLocaleString()}</div>
+                                        <div style={{ fontSize: "18px", fontWeight: 800, color: "var(--text-primary)" }}>{formatPrice(item.currentPrice?.toLocaleString())}</div>
                                     </div>
                                     {item.suggestedPrice !== item.currentPrice && (
                                         <>
                                             <div style={{ display: "flex", alignItems: "center", color: "var(--text-muted)", fontSize: "20px" }}>→</div>
                                             <div style={{ background: "rgba(52,211,153,0.08)", borderRadius: "8px", padding: "8px 14px", border: "1px solid rgba(52,211,153,0.2)" }}>
                                                 <div style={{ fontSize: "11px", color: "rgba(52,211,153,0.7)" }}>Suggested</div>
-                                                <div style={{ fontSize: "18px", fontWeight: 800, color: "#34d399" }}>$ / ৳{item.suggestedPrice?.toLocaleString()}</div>
+                                                <div style={{ fontSize: "18px", fontWeight: 800, color: "#34d399" }}>{formatPrice(item.suggestedPrice?.toLocaleString())}</div>
                                             </div>
                                         </>
                                     )}
@@ -370,7 +372,7 @@ export default function AIPage() {
                                             {[
                                                 { label: "Segment", value: c.segment, color: sc.color },
                                                 { label: "Orders", value: c.orderCount },
-                                                { label: "Spent", value: `$ / ৳${c.totalSpent?.toLocaleString()}` },
+                                                { label: "Spent", value: formatPrice(c.totalSpent?.toLocaleString()) },
                                                 { label: "RFM", value: `${c.rfmScore}/15` },
                                                 { label: "Last Order", value: `${c.daysSinceLastOrder}d ago` },
                                             ].map((m: any) => (

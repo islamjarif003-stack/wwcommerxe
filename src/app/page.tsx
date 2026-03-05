@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import { ProductCard } from "@/components/ProductCard";
 import { HeroVideo } from "@/components/HeroVideo";
 import { api } from "@/lib/apiClient";
+import { usePrice } from "@/hooks/usePrice";
 
 const HERO_SLIDES = [
   {
@@ -58,12 +59,13 @@ const FEATURES = [
 ];
 
 const DELIVERY = [
-  { label: "Dhaka City", price: "$ / ৳60", days: "Same / Next Day", icon: "⚡" },
-  { label: "Dhaka District", price: "$ / ৳80", days: "1-2 Days", icon: "🚚" },
-  { label: "Anywhere else", price: "$ / ৳120", days: "3-5 Days", icon: "🇧🇩" },
+  { label: "Dhaka City", price: 60, days: "Same / Next Day", icon: "⚡" },
+  { label: "Dhaka District", price: 80, days: "1-2 Days", icon: "🚚" },
+  { label: "Anywhere else", price: 120, days: "3-5 Days", icon: "🇧🇩" },
 ];
 
 export default function HomePage() {
+  const { formatPrice } = usePrice();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [featuredProducts, setFeaturedProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
@@ -486,7 +488,7 @@ export default function HomePage() {
                     }}>
                       <div style={{ fontSize: "22px", marginBottom: "8px" }}>{z.icon}</div>
                       <p style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-primary)" }}>{z.label}</p>
-                      <p style={{ fontSize: "22px", fontWeight: 800, color: "var(--primary)", margin: "3px 0" }}>{z.price}</p>
+                      <p style={{ fontSize: "22px", fontWeight: 800, color: "var(--primary)", margin: "3px 0" }}>{formatPrice(z.price)}</p>
                       <p style={{ fontSize: "11px", color: "var(--text-muted)" }}>{z.days}</p>
                     </div>
                   ))}
@@ -505,7 +507,7 @@ export default function HomePage() {
                   <p style={{ fontSize: "12px", color: "var(--text-muted)" }}>Districts Covered</p>
                 </div>
                 <p style={{ fontSize: "13px", color: "var(--secondary)", marginTop: "10px", fontWeight: 600 }}>
-                  🎁 Free delivery over $ / ৳1000
+                  🎁 Free delivery over {formatPrice(1000)}
                 </p>
               </div>
             </div>
