@@ -24,7 +24,7 @@ export default function AdminProductsPage() {
 
     const emptyForm = {
         name: "", slug: "", description: "", shortDescription: "", categoryId: "",
-        brand: "", tags: "", basePrice: "", comparePrice: "", sku: "",
+        brand: "", tags: "", basePrice: "", comparePrice: "", sku: "", supplierSku: "",
         stock: "", lowStockThreshold: "5", isActive: true, isFeatured: false, isDigital: false,
         images: "", seoTitle: "", seoDescription: "",
     };
@@ -63,7 +63,7 @@ export default function AdminProductsPage() {
             tags: product.tags.join(", "),
             basePrice: String(product.basePrice),
             comparePrice: product.comparePrice ? String(product.comparePrice) : "",
-            sku: product.sku, stock: String(product.stock),
+            sku: product.sku, supplierSku: product.supplierSku || "", stock: String(product.stock),
             lowStockThreshold: String(product.lowStockThreshold),
             isActive: product.isActive, isFeatured: product.isFeatured, isDigital: product.isDigital,
             images: product.images.join(", "),
@@ -132,7 +132,9 @@ export default function AdminProductsPage() {
             const data = await res.json();
             if (data.success) {
                 setUploadResult(data.data);
-                toast.success(`✅ ${data.data.inserted} products uploaded!`);
+                toast.success(
+                    `✅ Created: ${data.data.created ?? data.data.inserted ?? 0}, Updated: ${data.data.updated ?? 0}, Auto-resolved slug/sku: ${data.data.autoResolvedSlugSku ?? 0}, Invalid Rows: ${data.data.invalidRows ?? 0}`
+                );
                 load(1);
             } else {
                 toast.error(data.message || data.error || "Upload failed");
@@ -163,7 +165,7 @@ export default function AdminProductsPage() {
                         onChange={handleBulkUpload}
                     />
                     <a
-                        href="data:text/csv;charset=utf-8,name,slug,sku,categoryId,basePrice,comparePrice,stock,description,brand,tags,images,isActive,isFeatured%0AExample Product,example-product,EX-001,CAT_ID_HERE,990,,50,Short description,BrandName,tag1|tag2,https://img.url/img.jpg,true,false"
+                        href="data:text/csv;charset=utf-8,name,slug,sku,supplierSku,categoryId,basePrice,comparePrice,stock,description,brand,tags,images,isActive,isFeatured%0AExample Product,example-product,EX-001,SUP-001,CAT_ID_HERE,990,,50,Short description,BrandName,tag1|tag2,https://img.url/img.jpg,true,false"
                         download="product_template.csv"
                         className="btn-secondary text-sm"
                     >
@@ -194,10 +196,28 @@ export default function AdminProductsPage() {
                         </button>
                     </div>
                     <div className="flex gap-6 text-sm">
-                        <span>✅ Inserted: <strong className="text-[var(--success)]">{uploadResult.inserted}</strong></span>
+                        <span>✅ Created: <strong className="text-[var(--success)]">{uploadResult.created ?? uploadResult.inserted ?? 0}</strong></span>
+                        <span>🔄 Updated: <strong className="text-[var(--primary)]">{uploadResult.updated ?? 0}</strong></span>
+                        <span>❌ Invalid Rows: <strong className="text-[var(--danger)]">{uploadResult.invalidRows ?? 0}</strong></span>
+                        <span>🧾 Duplicate Supplier SKU: <strong className="text-[var(--danger)]">{uploadResult.duplicateSupplierSku ?? 0}</strong></span>
+                        <span>🛠️ Auto-resolved slug/sku: <strong className="text-[var(--primary)]">{uploadResult.autoResolvedSlugSku ?? 0}</strong></span>
                         <span>⚠️ Skipped: <strong className="text-[var(--warn)]">{uploadResult.skipped}</strong></span>
-                        <span>📋 Total: <strong className="text-[var(--text-primary)]">{uploadResult.processed}</strong></span>
+                        <span>📋 Total Rows: <strong className="text-[var(--text-primary)]">{uploadResult.processed}</strong></span>
                     </div>
+                    {uploadResult.validRows !== undefined && (
+                        <p className="mt-2 text-xs text-[var(--text-muted)]">Valid rows: {uploadResult.validRows}</p>
+                    )}
+                    {uploadResult.processingSkipped !== undefined && (
+                        <p className="mt-1 text-xs text-[var(--text-muted)]">Skipped during DB processing: {uploadResult.processingSkipped}</p>
+                    )}
+                    {uploadResult.parseErrors?.length > 0 && (
+                        <details className="mt-3">
+                            <summary className="text-xs text-[var(--warn)] cursor-pointer">Show {uploadResult.parseErrors.length} parse/validation errors</summary>
+                            <ul className="mt-2 text-xs text-[var(--text-muted)] space-y-1">
+                                {uploadResult.parseErrors.map((e: string, i: number) => <li key={i}>• {e}</li>)}
+                            </ul>
+                        </details>
+                    )}
                     {uploadResult.insertErrors?.length > 0 && (
                         <details className="mt-3">
                             <summary className="text-xs text-[var(--danger)] cursor-pointer">Show {uploadResult.insertErrors.length} errors</summary>
@@ -351,6 +371,10 @@ export default function AdminProductsPage() {
                                 <div>
                                     <label className="block text-xs text-[var(--text-muted)] mb-1">SKU *</label>
                                     <input className="input-field text-sm" required value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} />
+                                </div>
+                                <div>
+                                    <label className="block text-xs text-[var(--text-muted)] mb-1">Supplier SKU</label>
+                                    <input className="input-field text-sm" value={form.supplierSku} onChange={(e) => setForm({ ...form, supplierSku: e.target.value })} />
                                 </div>
                                 <div>
                                     <label className="block text-xs text-[var(--text-muted)] mb-1">Base Price (৳) *</label>

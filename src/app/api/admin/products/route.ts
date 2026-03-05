@@ -59,7 +59,7 @@ const getHandler = async (req: AuthedRequest) => {
 const postHandler = async (req: AuthedRequest) => {
     const body = await req.json();
     const { name, slug, description, shortDescription, categoryId, brand, tags, images,
-        basePrice, comparePrice, sku, stock, lowStockThreshold, attributes, variants,
+        basePrice, comparePrice, sku, supplierSku, stock, lowStockThreshold, attributes, variants,
         isActive, isFeatured, isDigital, seoTitle, seoDescription, weight } = body;
 
     if (!name || !slug || !basePrice || !sku || !categoryId)
@@ -73,7 +73,7 @@ const postHandler = async (req: AuthedRequest) => {
             name, slug, description: description || "", shortDescription,
             categoryId, brand, tags: tags || [], images: images || [],
             basePrice: parseFloat(basePrice), comparePrice: comparePrice ? parseFloat(comparePrice) : undefined,
-            sku, stock: parseInt(stock) || 0, lowStockThreshold: parseInt(lowStockThreshold) || 5,
+            sku, supplierSku: supplierSku || null, stock: parseInt(stock) || 0, lowStockThreshold: parseInt(lowStockThreshold) || 5,
             weight: weight ? parseFloat(weight) : undefined,
             attributes: attributes || {},
             isActive: isActive !== false, isFeatured: isFeatured || false, isDigital: isDigital || false,

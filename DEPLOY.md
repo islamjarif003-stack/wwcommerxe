@@ -9,11 +9,12 @@ cd wwcommerce
 cp .env.example .env
 nano .env   # Fill in your values
 
-# 2. Start everything
-docker-compose up -d
+# 2. Start everything (auto-creates/updates tables on boot)
+docker-compose up -d --build
 
-# 3. Seed database (first time only)
-docker-compose exec app node prisma/seed-demo.js
+# 3. (Optional) Seed database on next boot
+# Add RUN_SEED=true in .env then restart app service:
+# docker-compose up -d app
 
 # 4. Generate 10,000+ products (optional)
 docker-compose exec app node prisma/generate-10k-products.js --count=10000
@@ -89,8 +90,9 @@ NEXT_PUBLIC_APP_URL="https://..."   # Required — your domain
 ## First-Time Setup After Deploy
 
 ```bash
-# 1. Run database migrations
-npx prisma migrate deploy
+# 1. Database schema apply happens automatically on container boot:
+#    - prisma migrate deploy (if migrations exist)
+#    - prisma db push (fallback if no migrations folder exists and AUTO_DB_PUSH=true)
 
 # 2. Create superadmin (visit this URL in browser):
 GET https://yourdomain.com/api/auth/setup-admin
@@ -100,7 +102,7 @@ curl -X POST https://yourdomain.com/api/auth/setup-admin \
   -d '{"name":"Admin","email":"admin@yourdomain.com","password":"StrongPass!","setupKey":"YOUR_ADMIN_SETUP_KEY"}'
 
 # 3. Seed sample data (optional)
-node prisma/seed-demo.js
+docker-compose exec app node prisma/seed-demo.js
 
 # 4. Generate products (optional)
 node prisma/generate-10k-products.js --count=10000
@@ -145,6 +147,9 @@ curl https://yourdomain.com/api/health
 
 # Watch logs
 docker-compose logs -f app
+
+# Verify startup migration/db-push logs
+docker-compose logs -f app | grep -E "Running database migrations|No migrations found|prisma db push|Starting Next.js"
 
 # Database size
 docker-compose exec db psql -U wwadmin -c "SELECT pg_size_pretty(pg_database_size('wwcommerce'));"

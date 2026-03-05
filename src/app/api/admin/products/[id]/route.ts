@@ -17,7 +17,7 @@ const putHandler = async (req: AuthedRequest, { params }: { params: Promise<{ id
     const body = await req.json();
     const updates: any = {};
     const fields = ["name", "description", "shortDescription", "categoryId", "brand", "tags",
-        "images", "basePrice", "comparePrice", "sku", "stock", "lowStockThreshold", "weight",
+        "images", "basePrice", "comparePrice", "sku", "supplierSku", "stock", "lowStockThreshold", "weight",
         "attributes", "isActive", "isFeatured", "isDigital", "seoTitle", "seoDescription"];
 
     fields.forEach((f) => { if (body[f] !== undefined) updates[f] = body[f]; });

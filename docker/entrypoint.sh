@@ -12,9 +12,24 @@ until npx prisma db ping 2>/dev/null; do
 done
 echo "✅ Database ready!"
 
-# Run migrations (safe — only applies pending ones)
-echo "📦 Running database migrations..."
-npx prisma migrate deploy
+# Ensure Prisma client is in sync at runtime
+echo "🧠 Generating Prisma client..."
+npx prisma generate
+
+# Apply schema changes automatically on boot
+# - If migrations exist: use migrate deploy (production-safe)
+# - If no migrations exist yet: optional fallback to db push for table creation
+if [ -d "prisma/migrations" ] && [ "$(ls -A prisma/migrations 2>/dev/null)" ]; then
+    echo "📦 Running database migrations (prisma migrate deploy)..."
+    npx prisma migrate deploy
+else
+    if [ "${AUTO_DB_PUSH:-true}" = "true" ]; then
+        echo "📦 No migrations found. Running prisma db push to create/update tables..."
+        npx prisma db push
+    else
+        echo "⚠️ No migrations found and AUTO_DB_PUSH=false. Skipping schema apply."
+    fi
+fi
 
 # Seed superadmin if not exists (idempotent)
 if [ "${RUN_SEED:-false}" = "true" ]; then

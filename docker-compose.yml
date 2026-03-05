@@ -49,6 +49,9 @@ services:
       ADMIN_SETUP_KEY: ${ADMIN_SETUP_KEY}
       NEXT_PUBLIC_APP_NAME: ${NEXT_PUBLIC_APP_NAME:-WW Commerce}
       NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost}
+      # Startup toggles for auto setup
+      AUTO_DB_PUSH: ${AUTO_DB_PUSH:-true}
+      RUN_SEED: ${RUN_SEED:-false}
       NODE_ENV: production
     ports:
       - "3000:3000"

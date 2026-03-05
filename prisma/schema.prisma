@@ -108,6 +108,7 @@ model Product {
   basePrice        Float
   comparePrice     Float?
   sku              String   @unique
+  supplierSku      String?
   stock            Int      @default(0)
   lowStockThreshold Int     @default(5)
   

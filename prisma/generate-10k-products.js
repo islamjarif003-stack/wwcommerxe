@@ -148,7 +148,19 @@ function buildProduct(i, catId) {
         lowStockThreshold: 5,
         images: [cat.img],
         tags: cat.tags,
-        attributes: {},
+        // Insert sizes based on catId
+        attributes: (function () {
+            if (catId === 'cat-fashion') {
+                if (!name.includes('Saree')) return { "Size": ["36 (S)", "38 (M)", "40 (L)", "42 (XL)", "44 (XXL)"] };
+            } else if (catId === 'cat-mens') {
+                if (name.includes('Jeans') || name.includes('Trouser') || name.includes('Shorts') || name.includes('Pants') || name.includes('Cargo')) {
+                    return { "Size": ["28", "30", "32", "34", "36", "38"] };
+                } else {
+                    return { "Size": ["M (38)", "L (40)", "XL (42)", "XXL (44)"] };
+                }
+            }
+            return {};
+        })(),
         isActive: Math.random() > 0.04,
         isFeatured: Math.random() > 0.93,
         isDigital: false,

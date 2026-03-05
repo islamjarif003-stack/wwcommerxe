@@ -132,7 +132,7 @@ async function main() {
 
     // ─── 3. USERS ────────────────────────────────────────────
     console.log('👤 Seeding users...');
-    const hashedPw = await bcrypt.hash('Admin@123', 10);
+    const hashedPw = await bcrypt.hash('Admin@1234', 10);
     const customerPw = await bcrypt.hash('Customer@123', 10);
 
     const users = await Promise.all([
@@ -216,11 +216,24 @@ async function main() {
     ];
 
     for (const p of productDefs) {
+        let attrs = undefined;
+        if (p.cat === 'cat-fashion') {
+            if (!p.name.includes('Saree')) {
+                attrs = { "Size": ["36 (S)", "38 (M)", "40 (L)", "42 (XL)", "44 (XXL)"] };
+            }
+        } else if (p.cat === 'cat-mens') {
+            if (p.name.includes('Jeans') || p.name.includes('Trouser')) {
+                attrs = { "Size": ["30", "32", "34", "36", "38"] };
+            } else {
+                attrs = { "Size": ["M (38)", "L (40)", "XL (42)", "XXL (44)"] };
+            }
+        }
+
         const productSlug = slug(p.name);
         const sku = `WW-${productSlug.slice(0, 8).toUpperCase().replace(/-/g, '')}-${rand(100, 999)}`;
         await prisma.product.upsert({
             where: { slug: productSlug },
-            update: { soldCount: p.sold, demandScore: p.demand, stock: p.stock },
+            update: { soldCount: p.sold, demandScore: p.demand, stock: p.stock, attributes: attrs },
             create: {
                 name: p.name, slug: productSlug, sku,
                 categoryId: p.cat,
@@ -236,6 +249,7 @@ async function main() {
                 performanceScore: Math.round((p.demand + p.sold / 10) / 2),
                 seoTitle: `${p.name} — Best Price in Bangladesh | WW Commerce`,
                 seoDescription: `Buy ${p.name} at best price. Free delivery in Dhaka. COD available.`,
+                attributes: attrs,
                 createdAt: daysAgo(rand(10, 180)),
             }
         }).catch(() => { }); // skip if sku conflict

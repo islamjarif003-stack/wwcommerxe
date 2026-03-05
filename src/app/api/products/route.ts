@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
 
     let whereClause: any = { isActive: true };
 
-    // Category filter: slug → resolve to ID + any sub-category IDs
+    // Category filter: support BOTH id and slug → resolve to parent ID + child IDs
     if (category) {
         const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(category);
         if (isUUID) {
@@ -27,9 +27,13 @@ export async function GET(req: NextRequest) {
             const allIds = [category, ...childRows.map(c => c.id)];
             whereClause.categoryId = { in: allIds };
         } else {
-            // Resolve slug → parent ID + child IDs via raw SQL
+            // Resolve incoming category (id OR slug) → parent ID + child IDs via raw SQL
             const parentRows = await prisma.$queryRaw<{ id: string }[]>`
-                SELECT id FROM "Category" WHERE slug = ${category} AND "isActive" = true LIMIT 1
+                SELECT id
+                FROM "Category"
+                WHERE (id = ${category} OR slug = ${category})
+                  AND "isActive" = true
+                LIMIT 1
             `;
             if (parentRows.length > 0) {
                 const parentId = parentRows[0].id;
@@ -38,6 +42,9 @@ export async function GET(req: NextRequest) {
                 `;
                 const allIds = [parentId, ...childRows.map(c => c.id)];
                 whereClause.categoryId = { in: allIds };
+            } else {
+                // If category is provided but doesn't resolve, return no products instead of leaking all products
+                whereClause.categoryId = "__NO_MATCH__";
             }
         }
     }
