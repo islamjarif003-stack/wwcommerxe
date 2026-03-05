@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
                 totalOrders: 0,
                 totalSpent: 0,
                 loyaltyPoints: 0,
+                wishlist: [],
             }
         });
 
@@ -32,6 +33,13 @@ export async function POST(req: NextRequest) {
         const { password: _, ...userSafe } = user;
         return NextResponse.json({ success: true, data: { user: userSafe, token, refreshToken } }, { status: 201 });
     } catch (e) {
-        return NextResponse.json({ success: false, error: "Registration failed" }, { status: 500 });
+        const err = e as Error;
+        console.error("[auth/register]", err);
+
+        const message = process.env.NODE_ENV === "development"
+            ? (err?.message || "Registration failed")
+            : "Registration failed";
+
+        return NextResponse.json({ success: false, error: message }, { status: 500 });
     }
 }

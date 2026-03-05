@@ -2,6 +2,19 @@ import { useAuthStore } from "@/store/authStore";
 
 const BASE_URL = "/api";
 
+function extractErrorMessage(payload: any): string {
+    if (!payload) return "Unknown error";
+    if (typeof payload === "string") return payload;
+    if (typeof payload === "object") {
+        const p = payload as Record<string, unknown>;
+        const candidates = [p.message, p.error, p.detail, p.title];
+        for (const c of candidates) {
+            if (typeof c === "string" && c.trim()) return c;
+        }
+    }
+    return "Unknown error";
+}
+
 async function apiFetch(endpoint: string, options: RequestInit = {}) {
     const token = useAuthStore.getState().token;
     const headers: Record<string, string> = {
@@ -11,9 +24,18 @@ async function apiFetch(endpoint: string, options: RequestInit = {}) {
     if (token) headers["Authorization"] = `Bearer ${token}`;
 
     const res = await fetch(`${BASE_URL}${endpoint}`, { ...options, headers });
-    const data = await res.json();
 
-    if (!res.ok) throw new Error(`Request failed for ${endpoint}: ${data.message || "Unknown error"}`);
+    let data: any = null;
+    try {
+        data = await res.json();
+    } catch {
+        data = null;
+    }
+
+    if (!res.ok) {
+        const reason = extractErrorMessage(data);
+        throw new Error(`Request failed for ${endpoint} (${res.status}): ${reason}`);
+    }
     return data;
 }
 
