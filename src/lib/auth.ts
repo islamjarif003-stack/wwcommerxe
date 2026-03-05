@@ -4,8 +4,19 @@
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
-const JWT_SECRET = process.env.JWT_SECRET!;
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
+const requireEnv = (name: string): string => {
+    const value = process.env[name]?.trim();
+    if (!value) {
+        throw new Error(
+            `[Auth Config] Missing required environment variable: ${name}. ` +
+            `Set it in your deployment environment (e.g. Vercel Project Settings → Environment Variables).`
+        );
+    }
+    return value;
+};
+
+const JWT_SECRET = requireEnv("JWT_SECRET");
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET?.trim() || JWT_SECRET;
 
 export interface TokenPayload {
     id: string;

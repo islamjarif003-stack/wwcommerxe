@@ -81,6 +81,7 @@ docker-compose up -d
 ```bash
 DATABASE_URL="postgresql://..."    # Required
 JWT_SECRET="..."                    # Required — min 32 chars
+JWT_REFRESH_SECRET="..."            # Recommended (falls back to JWT_SECRET if missing)
 ADMIN_SETUP_KEY="..."               # Required — for first admin creation
 NEXT_PUBLIC_APP_URL="https://..."   # Required — your domain
 ```
