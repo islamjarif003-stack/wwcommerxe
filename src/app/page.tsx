@@ -180,7 +180,7 @@ export default function HomePage() {
               fontWeight: 800, lineHeight: 1.05,
               wordWrap: "break-word",
               letterSpacing: "-0.02em",
-              color: "white", marginBottom: "24px",
+              color: "var(--text-primary)", marginBottom: "24px",
               animation: "fadeUp 0.65s ease 0.1s both",
             }}>
               {s.title}{" "}
@@ -220,7 +220,7 @@ export default function HomePage() {
                 padding: "16px 36px", borderRadius: "14px",
                 background: "var(--bg-card)",
                 border: "1px solid var(--border)",
-                color: "white", fontWeight: 700, fontSize: "16px", textDecoration: "none",
+                color: "var(--text-primary)", fontWeight: 700, fontSize: "16px", textDecoration: "none",
                 backdropFilter: "blur(12px)", transition: "all 0.3s ease",
               }}
                 onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = "var(--bg-hover)"; (e.currentTarget as HTMLElement).style.color = "var(--text-primary)"; }}
@@ -257,7 +257,7 @@ export default function HomePage() {
                 background: "var(--bg-surface)", backdropFilter: "blur(12px)",
                 padding: "20px 24px", textAlign: "center",
               }}>
-                <div style={{ fontSize: "clamp(20px,3vw,30px)", fontWeight: 900, color: "white" }}>{st.value}</div>
+                <div style={{ fontSize: "clamp(20px,3vw,30px)", fontWeight: 900, color: "var(--text-primary)" }}>{st.value}</div>
                 <div style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "3px", fontWeight: 600 }}>{st.label}</div>
               </div>
             ))}
@@ -283,7 +283,7 @@ export default function HomePage() {
                   <f.icon size={22} color={f.color} />
                 </div>
                 <div>
-                  <p style={{ fontWeight: 700, fontSize: "14px", color: "white" }}>{f.label}</p>
+                  <p style={{ fontWeight: 700, fontSize: "14px", color: "var(--text-primary)" }}>{f.label}</p>
                   <p style={{ fontSize: "12px", color: "var(--text-muted)", marginTop: "2px" }}>{f.desc}</p>
                 </div>
               </div>
@@ -299,7 +299,7 @@ export default function HomePage() {
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "28px" }}>
               <div>
                 <div className="section-label">Collections</div>
-                <h2 style={{ fontSize: "clamp(22px,3.5vw,34px)", fontWeight: 800, color: "white", letterSpacing: "-0.02em" }}>
+                <h2 style={{ fontSize: "clamp(22px,3.5vw,34px)", fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
                   Shop by Category
                 </h2>
               </div>
@@ -380,7 +380,7 @@ export default function HomePage() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "36px" }}>
               <div>
                 <div className="section-label">AI Detected</div>
-                <h2 style={{ fontSize: "clamp(22px,3.5vw,36px)", fontWeight: 800, color: "white", letterSpacing: "-0.02em" }}>
+                <h2 style={{ fontSize: "clamp(22px,3.5vw,36px)", fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>
                   🔥 Trending Right Now
                 </h2>
               </div>
@@ -401,7 +401,7 @@ export default function HomePage() {
           <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", marginBottom: "40px" }}>
             <div>
               <div className="section-label">Handpicked</div>
-              <h2 style={{ fontSize: "clamp(22px,3.5vw,36px)", fontWeight: 800, color: "white", letterSpacing: "-0.02em" }}>Featured Products</h2>
+              <h2 style={{ fontSize: "clamp(22px,3.5vw,36px)", fontWeight: 800, color: "var(--text-primary)", letterSpacing: "-0.02em" }}>Featured Products</h2>
             </div>
             <Link href="/shop?featured=true" className="btn-ghost">View All <ChevronRight size={14} /></Link>
           </div>

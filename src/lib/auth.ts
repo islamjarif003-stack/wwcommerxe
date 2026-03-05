@@ -1,0 +1,45 @@
+// ============================================================
+// WW Commerce OS – JWT Auth Utilities
+// ============================================================
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
+
+const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET!;
+
+export interface TokenPayload {
+    id: string;
+    email: string;
+    role: string;
+}
+
+export const generateTokens = (payload: TokenPayload) => {
+    const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "2h" });
+    const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: "7d" });
+    return { token, refreshToken };
+};
+
+export const verifyToken = (token: string): TokenPayload | null => {
+    try {
+        return jwt.verify(token, JWT_SECRET) as TokenPayload;
+    } catch {
+        return null;
+    }
+};
+
+export const verifyRefreshToken = (token: string): TokenPayload | null => {
+    try {
+        return jwt.verify(token, JWT_REFRESH_SECRET) as TokenPayload;
+    } catch {
+        return null;
+    }
+};
+
+export const hashPassword = async (password: string) => bcrypt.hash(password, 12);
+export const comparePassword = async (plain: string, hashed: string) => bcrypt.compare(plain, hashed);
+
+export const getTokenFromRequest = (req: Request): string | null => {
+    const authHeader = req.headers.get("authorization");
+    if (authHeader?.startsWith("Bearer ")) return authHeader.slice(7);
+    return null;
+};

@@ -1,0 +1,361 @@
+// ============================================================
+// WW Commerce OS – Database Seed Script
+// Run: npx tsx src/scripts/seed.ts
+// ============================================================
+import { db } from "../lib/db";
+import { hashPassword } from "../lib/auth";
+import { v4 as uuidv4 } from "uuid";
+
+async function seed() {
+    console.log("🌱 Seeding WW Commerce OS database...");
+
+    // ── Admin User ──────────────────────────────────────────
+    const existingAdmin = db.query("users", (u) => u.role === "superadmin")[0];
+    if (!existingAdmin) {
+        const hashedPwd = await hashPassword("Admin@1234");
+        db.insert("users", {
+            id: uuidv4(),
+            name: "Super Admin",
+            email: "admin@wwcommerce.com",
+            password: hashedPwd,
+            phone: "01700000000",
+            role: "superadmin",
+            isActive: true,
+            emailVerified: true,
+            addresses: [],
+            wishlist: [],
+            totalOrders: 0,
+            totalSpent: 0,
+            loyaltyPoints: 0,
+            behaviorProfile: { segments: ["admin"], avgSessionDuration: 0, visitCount: 0, preferredCategories: [], conversionProbability: 0 },
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        });
+        console.log("✅ Super Admin seeded: admin@wwcommerce.com / Admin@1234");
+    }
+
+    // ── Categories ─────────────────────────────────────────
+    const cats = [
+        { name: "Men's Fashion", slug: "mens-fashion", description: "Shirts, pants, jackets for men", sortOrder: 1, image: "https://images.unsplash.com/photo-1490114538077-0a7f8cb49891?w=400" },
+        { name: "Women's Fashion", slug: "womens-fashion", description: "Saree, kurti, dress for women", sortOrder: 2, image: "https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400" },
+        { name: "Electronics", slug: "electronics", description: "Phones, laptops, accessories", sortOrder: 3, image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=400" },
+        { name: "Home & Living", slug: "home-living", description: "Furniture, decor, kitchen items", sortOrder: 4, image: "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=400" },
+        { name: "Grocery", slug: "grocery", description: "Fresh vegetables, rice, spices", sortOrder: 5, image: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400" },
+        { name: "Beauty & Health", slug: "beauty-health", description: "Skincare, vitamins, cosmetics", sortOrder: 6, image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400" },
+    ];
+
+    if (db.getAll("categories").length === 0) {
+        cats.forEach((c) => db.insert("categories", { id: uuidv4(), ...c, isActive: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }));
+        console.log("✅ Categories seeded");
+    }
+
+    // ── Delivery Zones ─────────────────────────────────────
+    if (db.getAll("deliveryZones").length === 0) {
+        const zones = [
+            {
+                name: "Dhaka City",
+                type: "dhaka_city" as const,
+                districts: ["Dhaka"],
+                areas: ["Mirpur", "Mohammadpur", "Gulshan", "Banani", "Uttara", "Dhanmondi"],
+                baseCharge: 60,
+                freeDeliveryThreshold: 1000,
+                estimatedDays: "Same day / Next day",
+                couriers: ["Pathao", "Paperfly", "RedX"],
+                courierPerformance: {
+                    Pathao: { successRate: 95, avgDays: 1 },
+                    Paperfly: { successRate: 92, avgDays: 1 },
+                    RedX: { successRate: 90, avgDays: 1 },
+                },
+                isActive: true,
+            },
+            {
+                name: "Dhaka District",
+                type: "dhaka_district" as const,
+                districts: ["Gazipur", "Narayanganj", "Narsingdi", "Manikganj", "Munshiganj"],
+                areas: [],
+                baseCharge: 80,
+                freeDeliveryThreshold: 1500,
+                estimatedDays: "1-2 days",
+                couriers: ["Pathao", "Paperfly", "Sundarban"],
+                courierPerformance: {
+                    Pathao: { successRate: 90, avgDays: 2 },
+                    Paperfly: { successRate: 88, avgDays: 2 },
+                },
+                isActive: true,
+            },
+            {
+                name: "Outside Dhaka",
+                type: "outside_dhaka" as const,
+                districts: [],
+                areas: [],
+                baseCharge: 120,
+                freeDeliveryThreshold: 2000,
+                estimatedDays: "3-5 days",
+                couriers: ["Sundarban", "SA Paribahan", "Paperfly"],
+                courierPerformance: {
+                    "Sundarban": { successRate: 85, avgDays: 4 },
+                    "SA Paribahan": { successRate: 82, avgDays: 4 },
+                },
+                isActive: true,
+            },
+            {
+                name: "Chittagong City",
+                type: "custom" as const,
+                districts: ["Chattogram", "Cumilla"],
+                areas: [],
+                baseCharge: 100,
+                freeDeliveryThreshold: 2000,
+                estimatedDays: "2-3 days",
+                couriers: ["Pathao", "Paperfly"],
+                courierPerformance: {
+                    Pathao: { successRate: 88, avgDays: 2 },
+                    Paperfly: { successRate: 85, avgDays: 3 },
+                },
+                isActive: true,
+            },
+        ];
+        zones.forEach((z: any) => db.insert("deliveryZones", { id: uuidv4(), ...z, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }));
+        console.log("✅ Delivery zones seeded");
+    }
+
+    // ── Products ───────────────────────────────────────────
+    if (db.getAll("products").length === 0) {
+        const categories = db.getAll("categories");
+        const mensCat = categories.find((c) => c.slug === "mens-fashion")!;
+        const womensCat = categories.find((c) => c.slug === "womens-fashion")!;
+        const electronicsCat = categories.find((c) => c.slug === "electronics")!;
+        const homeCat = categories.find((c) => c.slug === "home-living")!;
+
+        const products = [
+            {
+                name: "Premium Cotton Panjabi",
+                slug: "premium-cotton-panjabi",
+                description: "High-quality cotton panjabi perfect for Eid and casual occasions. Made from 100% pure cotton with intricate embroidery.",
+                shortDescription: "Premium 100% cotton panjabi with embroidery",
+                categoryId: mensCat?.id,
+                brand: "WW Fashion",
+                tags: ["panjabi", "eid", "cotton", "men"],
+                images: [
+                    "https://images.unsplash.com/photo-1620012253295-c15cc3e65df4?w=600",
+                    "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=600",
+                ],
+                basePrice: 1200,
+                comparePrice: 1800,
+                sku: "WW-PNJ-001",
+                stock: 85,
+                lowStockThreshold: 10,
+                attributes: { Size: ["S", "M", "L", "XL", "XXL"], Color: ["White", "Sky Blue", "Beige", "Cream"] },
+                variants: [
+                    { id: uuidv4(), sku: "WW-PNJ-001-M-WHT", attributes: { Size: "M", color: "white" }, price: 1200, stock: 20, isActive: true },
+                    { id: uuidv4(), sku: "WW-PNJ-001-L-WHT", attributes: { Size: "L", color: "white" }, price: 1200, stock: 15, isActive: true },
+                    { id: uuidv4(), sku: "WW-PNJ-001-XL-BLU", attributes: { Size: "XL", Color: "Sky Blue" }, price: 1250, stock: 18, isActive: true },
+                ],
+                isActive: true, isFeatured: true, isDigital: false,
+                rating: 4.5, reviewCount: 234, soldCount: 1520, viewCount: 8930,
+                demandScore: 82, performanceScore: 78,
+                seoTitle: "Premium Cotton Panjabi for Men | WW Commerce",
+                seoDescription: "Buy premium quality cotton panjabi online in Bangladesh. Best price guaranteed with fast delivery.",
+            },
+            {
+                name: "Women's Embroidered Kurti",
+                slug: "womens-embroidered-kurti",
+                description: "Beautiful embroidered kurti with delicate thread work. Perfect for office, casual outing, and family gatherings.",
+                shortDescription: "Elegant embroidered kurti for women",
+                categoryId: womensCat?.id,
+                brand: "WW Fashion",
+                tags: ["kurti", "women", "embroidery", "casual"],
+                images: [
+                    "https://images.unsplash.com/photo-1610030469983-98e550d6193c?w=600",
+                    "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=600",
+                ],
+                basePrice: 950,
+                comparePrice: 1400,
+                sku: "WW-KRT-001",
+                stock: 120,
+                lowStockThreshold: 15,
+                attributes: { Size: ["S", "M", "L", "XL"], Color: ["Pink", "Yellow", "Green", "Blue", "Orange"] },
+                variants: [],
+                isActive: true, isFeatured: true, isDigital: false,
+                rating: 4.7, reviewCount: 412, soldCount: 2340, viewCount: 12400,
+                demandScore: 91, performanceScore: 85,
+            },
+            {
+                name: "Xiaomi Redmi Note 13",
+                slug: "xiaomi-redmi-note-13",
+                description: "108MP camera, 5000mAh battery, AMOLED display. Officially sold in Bangladesh with warranty.",
+                shortDescription: "108MP camera smartphone with AMOLED screen",
+                categoryId: electronicsCat?.id,
+                brand: "Xiaomi",
+                tags: ["smartphone", "xiaomi", "redmi", "mobile"],
+                images: [
+                    "https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=600",
+                    "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=600",
+                ],
+                basePrice: 22500,
+                comparePrice: 25000,
+                sku: "WW-PHN-001",
+                stock: 45,
+                lowStockThreshold: 5,
+                attributes: { Storage: ["128GB", "256GB"], Color: ["Midnight Black", "Arctic White", "Ocean Blue"] },
+                variants: [
+                    { id: uuidv4(), sku: "WW-PHN-001-128-BLK", attributes: { Storage: "128GB", Color: "Midnight Black" }, price: 22500, stock: 15, isActive: true },
+                    { id: uuidv4(), sku: "WW-PHN-001-256-WHT", attributes: { Storage: "256GB", Color: "Arctic White" }, price: 24500, stock: 10, isActive: true },
+                ],
+                isActive: true, isFeatured: true, isDigital: false,
+                rating: 4.3, reviewCount: 89, soldCount: 234, viewCount: 4500,
+                demandScore: 72, performanceScore: 65,
+            },
+            {
+                name: "Wooden Dining Table Set (6 Seater)",
+                slug: "wooden-dining-table-6-seater",
+                description: "Premium solid wood dining table with 6 chairs. Crafted from seasoned shegun wood with premium finish.",
+                shortDescription: "Premium shegun wood 6-seater dining set",
+                categoryId: homeCat?.id,
+                brand: "WW Home",
+                tags: ["furniture", "dining", "wood", "home"],
+                images: [
+                    "https://images.unsplash.com/photo-1555041469-a586c61ea9bc?w=600",
+                    "https://images.unsplash.com/photo-1506439773649-6e0eb8cfb237?w=600",
+                ],
+                basePrice: 35000,
+                comparePrice: 42000,
+                sku: "WW-FRN-001",
+                stock: 8,
+                lowStockThreshold: 2,
+                attributes: { "Finish": ["Natural", "Dark Walnut", "Honey"] },
+                variants: [],
+                isActive: true, isFeatured: true, isDigital: false,
+                rating: 4.6, reviewCount: 45, soldCount: 67, viewCount: 2300,
+                demandScore: 55, performanceScore: 70,
+            },
+            {
+                name: "Men's Cargo Pants",
+                slug: "mens-cargo-pants",
+                description: "Durable multi-pocket cargo pants. Comfortable fit, ideal for outdoor activities and casual wear.",
+                shortDescription: "Multi-pocket durable cargo pants for men",
+                categoryId: mensCat?.id,
+                brand: "WW Casuals",
+                tags: ["cargo", "pants", "men", "outdoor"],
+                images: [
+                    "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=600",
+                ],
+                basePrice: 1500,
+                comparePrice: 2000,
+                sku: "WW-CGO-001",
+                stock: 3,
+                lowStockThreshold: 5,
+                attributes: { Size: ["28", "30", "32", "34", "36"], Color: ["Olive", "Black", "Tan", "Navy"] },
+                variants: [],
+                isActive: true, isFeatured: false, isDigital: false,
+                rating: 4.2, reviewCount: 178, soldCount: 890, viewCount: 5600,
+                demandScore: 68, performanceScore: 61,
+            },
+            {
+                name: "Wireless Bluetooth Earbuds",
+                slug: "wireless-bluetooth-earbuds",
+                description: "True wireless earbuds with 30hrs battery life, active noise cancellation, IPX5 water resistance.",
+                shortDescription: "ANC earbuds with 30hr battery life",
+                categoryId: electronicsCat?.id,
+                brand: "SoundMax",
+                tags: ["earbuds", "bluetooth", "wireless", "anc"],
+                images: [
+                    "https://images.unsplash.com/photo-1590658165737-15a047b7c2c7?w=600",
+                ],
+                basePrice: 2800,
+                comparePrice: 3500,
+                sku: "WW-ERB-001",
+                stock: 62,
+                lowStockThreshold: 10,
+                attributes: { Color: ["Black", "White", "Navy Blue"] },
+                variants: [],
+                isActive: true, isFeatured: true, isDigital: false,
+                rating: 4.4, reviewCount: 312, soldCount: 1230, viewCount: 7800,
+                demandScore: 85, performanceScore: 79,
+            },
+        ];
+
+        products.forEach((p) => {
+            db.insert("products", {
+                id: uuidv4(),
+                weight: 0.5,
+                ...p,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+            } as never);
+        });
+        console.log("✅ Products seeded");
+    }
+
+    // ── Feature Flags ──────────────────────────────────────
+    if (db.getAll("featureFlags").length === 0) {
+        const flags = [
+            { key: "ai_recommendations", name: "AI Product Recommendations", description: "Show AI-powered product suggestions", isEnabled: true, rolloutPercentage: 100, targetSegments: [] },
+            { key: "flash_sale_banner", name: "Flash Sale Banner", description: "Show flash sale countdown banner", isEnabled: false, rolloutPercentage: 0, targetSegments: [] },
+            { key: "loyalty_points", name: "Loyalty Points System", description: "Award points on every purchase", isEnabled: true, rolloutPercentage: 100, targetSegments: [] },
+            { key: "express_checkout", name: "Express Checkout", description: "One-click checkout for returning customers", isEnabled: true, rolloutPercentage: 80, targetSegments: ["returning_customer"] },
+            { key: "live_chat", name: "Live Chat Widget", description: "Show live chat support button", isEnabled: true, rolloutPercentage: 100, targetSegments: [] },
+        ];
+        flags.forEach((f) => db.insert("featureFlags", { id: uuidv4(), ...f, metadata: {}, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() }));
+        console.log("✅ Feature flags seeded");
+    }
+
+    // ── Sample Orders ─────────────────────────────────────
+    if (db.getAll("orders").length === 0) {
+        const zones = db.getAll("deliveryZones");
+        const products = db.getAll("products");
+        const statuses = ["pending", "confirmed", "processing", "shipped", "delivered"];
+
+        for (let i = 0; i < 15; i++) {
+            const product = products[Math.floor(Math.random() * products.length)];
+            const zone = zones[Math.floor(Math.random() * zones.length)];
+            const status = statuses[Math.floor(Math.random() * statuses.length)] as any;
+            const qty = Math.floor(Math.random() * 3) + 1;
+            const subtotal = product.basePrice * qty;
+            const deliveryCharge = 80;
+            const total = subtotal + deliveryCharge;
+            const daysAgo = Math.floor(Math.random() * 30);
+            const createdAt = new Date(Date.now() - daysAgo * 86400000).toISOString();
+
+            db.insert("orders", {
+                id: uuidv4(),
+                orderNumber: `WW26${String(i + 1).padStart(4, "0")}`,
+                userId: undefined,
+                customerName: ["Rahim Uddin", "Karim Hossain", "Fatema Begum", "Nasrin Akter", "Md. Jakir"][i % 5],
+                customerEmail: `customer${i + 1}@example.com`,
+                customerPhone: `0171${String(Math.random()).slice(2, 9)}`,
+                shippingAddress: {
+                    id: uuidv4(),
+                    label: "Home",
+                    name: "Rahim Uddin",
+                    phone: "01711234567",
+                    addressLine: `${i + 1}/A Lake View Road`,
+                    city: "Dhaka",
+                    district: "Dhaka",
+                    zone: "Mirpur",
+                    isDefault: true,
+                },
+                items: [{ productId: product.id, name: product.name, sku: product.sku, image: product.images[0], quantity: qty, unitPrice: product.basePrice, totalPrice: product.basePrice * qty }],
+                subtotal,
+                deliveryCharge,
+                discount: 0,
+                total,
+                paymentMethod: "cod",
+                paymentStatus: status === "delivered" ? "paid" : "pending",
+                status,
+                deliveryZoneId: zone.id,
+                riskScore: Math.floor(Math.random() * 40),
+                riskFlags: [],
+                isFraudSuspect: false,
+                statusHistory: [{ status: "pending", timestamp: createdAt }],
+                createdAt,
+                updatedAt: createdAt,
+            } as never);
+        }
+        console.log("✅ Sample orders seeded");
+    }
+
+    console.log("\n🚀 WW Commerce OS database ready!");
+    console.log("🔑 Login: admin@wwcommerce.com / Admin@1234");
+}
+
+seed().catch(console.error);

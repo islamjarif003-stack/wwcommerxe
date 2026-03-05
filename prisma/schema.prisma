@@ -1,0 +1,363 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----------------------------------------
+// USERS & AUTH
+// ----------------------------------------
+enum Role {
+  USER
+  ADMIN
+  MANAGER
+  SUPERADMIN
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  password      String // Hashed password
+  phone         String?
+  role          Role      @default(USER)
+  isActive      Boolean   @default(true)
+  emailVerified Boolean   @default(false)
+  
+  // Stats
+  totalOrders   Int       @default(0)
+  totalSpent    Float     @default(0)
+  loyaltyPoints Int       @default(0)
+
+  // Advanced metadata (JSON)
+  behaviorProfile Json?   // AI-ready field (preferred categories, views, segments)
+  
+  // Wishlist as array of Product IDs
+  wishlist      String[]
+
+  // Relationships
+  addresses     Address[]
+  orders        Order[]
+  chatSessions  ChatSession[]
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+  auditLogs     AuditLog[]
+}
+
+model Address {
+  id          String   @id @default(uuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  label       String   // e.g. "Home", "Office"
+  name        String
+  phone       String
+  addressLine String
+  city        String
+  district    String
+  zone        String?
+  isDefault   Boolean  @default(false)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ----------------------------------------
+// CATEGORIES & PRODUCTS
+// ----------------------------------------
+model Category {
+  id          String     @id @default(uuid())
+  name        String
+  slug        String     @unique
+  description String?
+  sortOrder   Int        @default(0)
+  image       String?
+  icon        String?    // emoji or icon name
+  isActive    Boolean    @default(true)
+
+  // Self-relation for subcategories (unlimited depth)
+  parentId    String?
+  parent      Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children    Category[] @relation("CategoryTree")
+
+  products    Product[]
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@index([parentId])
+  @@index([isActive, sortOrder])
+}
+
+model Product {
+  id               String   @id @default(uuid())
+  name             String
+  slug             String   @unique
+  shortDescription String?
+  description      String?  @db.Text
+  brand            String?
+  weight           Float    @default(0.5)
+  tags             String[]
+  images           String[]
+  
+  basePrice        Float
+  comparePrice     Float?
+  sku              String   @unique
+  stock            Int      @default(0)
+  lowStockThreshold Int     @default(5)
+  
+  // JSON field for dynamic attributes like {"Size": ["S", "M", "L"], "Color": ["Red", "Blue"]}
+  attributes       Json?    
+  
+  isActive         Boolean  @default(true)
+  isFeatured       Boolean  @default(false)
+  isDigital        Boolean  @default(false)
+
+  // Stats / AI Ready Fields
+  rating           Float    @default(0)
+  reviewCount      Int      @default(0)
+  soldCount        Int      @default(0)
+  viewCount        Int      @default(0)
+  demandScore      Int      @default(0)  // Computed score for AI prediction
+  performanceScore Int      @default(0)
+  
+  // SEO
+  seoTitle         String?
+  seoDescription   String?
+
+  categoryId       String
+  category         Category  @relation(fields: [categoryId], references: [id])
+
+  variants         ProductVariant[]
+  orderItems       OrderItem[]
+
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  // Indexes for large catalog performance
+  @@index([categoryId])
+  @@index([isActive])
+  @@index([isFeatured])
+  @@index([soldCount])
+  @@index([createdAt])
+  @@index([demandScore])
+  @@index([basePrice])
+  @@index([isActive, isFeatured])
+  @@index([isActive, categoryId])
+  @@index([isActive, createdAt])
+  @@index([isActive, soldCount])
+}
+
+model ProductVariant {
+  id         String   @id @default(uuid())
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  sku        String   @unique
+  
+  // Selected attributes for this variant, e.g. {"Size": "M", "Color": "Pink"}
+  attributes Json
+  
+  price      Float
+  stock      Int      @default(0)
+  isActive   Boolean  @default(true)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ----------------------------------------
+// DELIVERY & SETTINGS
+// ----------------------------------------
+model DeliveryZone {
+  id                    String   @id @default(uuid())
+  name                  String   // e.g. "Inside Dhaka", "Outside Dhaka"
+  type                  String?  // e.g. "dhaka_city", "rest_of_bd"
+  districts             String[] // e.g. ["Dhaka"]
+  areas                 String[] // e.g. ["Mirpur", "Gulshan"]
+  baseCharge            Float    // previously charge
+  freeDeliveryThreshold Float?   // e.g. 1000
+  estimatedDays         String?  // e.g. "Same day / Next day"
+  couriers              String[] // e.g. ["Pathao", "RedX"]
+  courierPerformance    Json?    // e.g. { "Pathao": { "successRate": 95, "avgDays": 1 } }
+  
+  isActive              Boolean  @default(true)
+
+  orders                Order[]
+
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+}
+
+model AdminSetting {
+  id        String   @id @default(uuid())
+  key       String   @unique // e.g. "STORE_INFO", "PAYMENT_METHODS", "SEO_GLOBALS"
+  value     Json
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ----------------------------------------
+// ORDERS
+// ----------------------------------------
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+  RETURNED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum PaymentMethod {
+  COD
+  ONLINE
+  BKASH
+  NAGAD
+}
+
+model Order {
+  id              String   @id @default(uuid())
+  orderNumber     String   @unique
+
+  
+  // Connect to user if logged in, but allow guest checkout
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id])
+  
+  // Snapshot of customer data at order time
+  customerName    String
+  customerEmail   String?
+  customerPhone   String
+  
+  // Detailed address stored via JSON or Snapshot
+  shippingAddress Json
+  
+  subtotal        Float
+  deliveryCharge  Float
+  discount        Float    @default(0)
+  total           Float
+  
+  paymentMethod   PaymentMethod @default(COD)
+  paymentStatus   PaymentStatus @default(PENDING)
+  status          OrderStatus   @default(PENDING)
+  
+  deliveryZoneId  String?
+  deliveryZone    DeliveryZone? @relation(fields: [deliveryZoneId], references: [id])
+  
+  // AI / Fraud detection flags
+  riskScore       Int      @default(0)
+  isFraudSuspect  Boolean  @default(false)
+  statusHistory   Json     // Array of status changes {status, timestamp, note, by}
+
+  items           OrderItem[]
+
+  // Tracking fields
+  courier         String?
+  trackingNumber  String?
+  notes           String?  @db.Text
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([status])
+  @@index([customerPhone])
+  @@index([createdAt])
+  @@index([isFraudSuspect])
+}
+
+model OrderItem {
+  id          String   @id @default(uuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId   String
+  product     Product  @relation(fields: [productId], references: [id])
+  
+  // Snapshot data at order time
+  name        String
+  sku         String
+  image       String?
+  quantity    Int
+  unitPrice   Float
+  totalPrice  Float
+  
+  // Selected variant attributes
+  attributes  Json?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// ----------------------------------------
+// AUDIT LOGS
+// ----------------------------------------
+model AuditLog {
+  id        String   @id @default(uuid())
+  action    String
+  entity    String
+  entityId  String?
+  userId    String
+  userEmail String
+  userRole  String
+  details   Json?
+  
+  // Relations
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+}
+
+// ----------------------------------------
+// LIVE SUPPORT (CHAT)
+// ----------------------------------------
+enum ChatStatus {
+  OPEN
+  WAITING
+  CLOSED
+}
+
+enum SenderType {
+  CUSTOMER
+  ADMIN
+}
+
+model ChatSession {
+  id        String   @id @default(uuid())
+  userId    String?  // Null for guest users
+  guestId   String?  // UUID or browser-based session ID for guests
+  name      String?  
+  email     String?  
+  status    ChatStatus @default(OPEN)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user      User?    @relation(fields: [userId], references: [id])
+  messages  ChatMessage[]
+}
+
+model ChatMessage {
+  id        String   @id @default(uuid())
+  sessionId String
+  sender    SenderType
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  session   ChatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+}
