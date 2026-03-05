@@ -285,7 +285,7 @@ export default function SettingsPage() {
                         <SectionCard title="Locale" icon={Globe}>
                             <FieldRow label="Currency" hint="Primary currency for pricing">
                                 <select value={store.currency} onChange={e => setStore(s => ({ ...s, currency: e.target.value }))} className="input-field" style={{ cursor: "pointer" }}>
-                                    <option value="BDT">BDT — Bangladeshi Taka (৳)</option>
+                                    <option value="BDT">BDT — Bangladeshi Taka ($ / ৳)</option>
                                     <option value="USD">USD — US Dollar ($)</option>
                                     <option value="EUR">EUR — Euro (€)</option>
                                 </select>
@@ -307,19 +307,19 @@ export default function SettingsPage() {
                         <SectionCard title="Delivery Charges" icon={Truck}>
                             <FieldRow label="Inside Dhaka" hint="Delivery fee in BDT">
                                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>৳</span>
+                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>$ / ৳</span>
                                     <Input value={delivery.insideDhaka} onChange={v => setDelivery(s => ({ ...s, insideDhaka: +v }))} type="number" placeholder="60" />
                                 </div>
                             </FieldRow>
                             <FieldRow label="Outside Dhaka" hint="Delivery fee for other districts">
                                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>৳</span>
+                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>$ / ৳</span>
                                     <Input value={delivery.outsideDhaka} onChange={v => setDelivery(s => ({ ...s, outsideDhaka: +v }))} type="number" placeholder="120" />
                                 </div>
                             </FieldRow>
                             <FieldRow label="Free Delivery Threshold" hint="Orders above this amount get free delivery">
                                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>৳</span>
+                                    <span style={{ fontSize: "18px", color: "var(--text-muted)" }}>$ / ৳</span>
                                     <Input value={delivery.freeDeliveryThreshold} onChange={v => setDelivery(s => ({ ...s, freeDeliveryThreshold: +v }))} type="number" placeholder="1000" />
                                 </div>
                             </FieldRow>

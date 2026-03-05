@@ -293,11 +293,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                             flexWrap: "wrap",
                         }}>
                             <span style={{ fontSize: "38px", fontWeight: 900, color: "var(--text-primary)" }}>
-                                ৳{currentPrice.toLocaleString()}
+                                $ / ৳{currentPrice.toLocaleString()}
                             </span>
                             {product.comparePrice && (
                                 <span style={{ fontSize: "20px", color: "var(--text-muted)", textDecoration: "line-through" }}>
-                                    ৳{product.comparePrice.toLocaleString()}
+                                    $ / ৳{product.comparePrice.toLocaleString()}
                                 </span>
                             )}
                             {discount > 0 && (

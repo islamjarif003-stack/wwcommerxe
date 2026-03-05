@@ -58,9 +58,9 @@ const FEATURES = [
 ];
 
 const DELIVERY = [
-  { label: "Dhaka City", price: "৳60", days: "Same / Next Day", icon: "⚡" },
-  { label: "Dhaka District", price: "৳80", days: "1-2 Days", icon: "🚚" },
-  { label: "Anywhere else", price: "৳120", days: "3-5 Days", icon: "🇧🇩" },
+  { label: "Dhaka City", price: "$ / ৳60", days: "Same / Next Day", icon: "⚡" },
+  { label: "Dhaka District", price: "$ / ৳80", days: "1-2 Days", icon: "🚚" },
+  { label: "Anywhere else", price: "$ / ৳120", days: "3-5 Days", icon: "🇧🇩" },
 ];
 
 export default function HomePage() {
@@ -505,7 +505,7 @@ export default function HomePage() {
                   <p style={{ fontSize: "12px", color: "var(--text-muted)" }}>Districts Covered</p>
                 </div>
                 <p style={{ fontSize: "13px", color: "var(--secondary)", marginTop: "10px", fontWeight: 600 }}>
-                  🎁 Free delivery over ৳1000
+                  🎁 Free delivery over $ / ৳1000
                 </p>
               </div>
             </div>

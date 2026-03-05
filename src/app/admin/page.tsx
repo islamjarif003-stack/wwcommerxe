@@ -83,8 +83,8 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <StatCard
                     label="Total Revenue" icon={TrendingUp}
-                    value={`৳${(stats?.totalRevenue || 0).toLocaleString()}`}
-                    sub={`This month: ৳${(stats?.monthRevenue || 0).toLocaleString()}`}
+                    value={`$ / ৳${(stats?.totalRevenue || 0).toLocaleString()}`}
+                    sub={`This month: $ / ৳${(stats?.monthRevenue || 0).toLocaleString()}`}
                     color="text-[var(--primary)] bg-[var(--primary-glow)]"
                     trend={stats?.revenueGrowth}
                 />
@@ -148,7 +148,7 @@ export default function AdminDashboard() {
                             <XAxis dataKey="date" tick={{ fill: "var(--text-muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
                             <YAxis tick={{ fill: "var(--text-muted)", fontSize: 11 }} axisLine={false} tickLine={false} />
                             <Tooltip contentStyle={customTooltipStyle} />
-                            <Area type="monotone" dataKey="revenue" stroke="var(--primary)" strokeWidth={2} fill="url(#revenueGrad)" name="Revenue (৳)" />
+                            <Area type="monotone" dataKey="revenue" stroke="var(--primary)" strokeWidth={2} fill="url(#revenueGrad)" name="Revenue ($ / ৳)" />
                         </AreaChart>
                     </ResponsiveContainer>
                 </div>
@@ -217,7 +217,7 @@ export default function AdminDashboard() {
                                                 <p className="text-xs text-[var(--text-muted)]">{order.customerPhone}</p>
                                             </div>
                                         </td>
-                                        <td className="font-semibold text-[var(--text-primary)]">৳{order.total.toLocaleString()}</td>
+                                        <td className="font-semibold text-[var(--text-primary)]">$ / ৳{order.total.toLocaleString()}</td>
                                         <td>
                                             <span className={`badge ${STATUS_COLORS[order.status?.toLowerCase()] || "badge-ghost"} text-[10px]`}>
                                                 {order.status}

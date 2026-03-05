@@ -75,11 +75,11 @@ export default function AdminDeliveryPage() {
                             </select>
                         </div>
                         <div>
-                            <label className="block text-xs text-[var(--text-muted)] mb-1">Base Charge (৳) *</label>
+                            <label className="block text-xs text-[var(--text-muted)] mb-1">Base Charge ($ / ৳) *</label>
                             <input className="input-field text-sm" required type="number" value={form.baseCharge} onChange={(e) => setForm({ ...form, baseCharge: e.target.value })} placeholder="120" />
                         </div>
                         <div>
-                            <label className="block text-xs text-[var(--text-muted)] mb-1">Free Delivery Threshold (৳)</label>
+                            <label className="block text-xs text-[var(--text-muted)] mb-1">Free Delivery Threshold ($ / ৳)</label>
                             <input className="input-field text-sm" type="number" value={form.freeDeliveryThreshold} onChange={(e) => setForm({ ...form, freeDeliveryThreshold: e.target.value })} placeholder="Optional" />
                         </div>
                         <div>
@@ -121,12 +121,12 @@ export default function AdminDeliveryPage() {
                                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
                                     <div>
                                         <p className="text-xs text-[var(--text-muted)]">Base Charge</p>
-                                        <p className="font-bold text-[var(--text-primary)]">৳{zone.baseCharge}</p>
+                                        <p className="font-bold text-[var(--text-primary)]">$ / ৳{zone.baseCharge}</p>
                                     </div>
                                     <div>
                                         <p className="text-xs text-[var(--text-muted)]">Free Delivery</p>
                                         <p className="font-semibold text-[var(--success)]">
-                                            {zone.freeDeliveryThreshold ? `Over ৳${zone.freeDeliveryThreshold}` : "N/A"}
+                                            {zone.freeDeliveryThreshold ? `Over $ / ৳${zone.freeDeliveryThreshold}` : "N/A"}
                                         </p>
                                     </div>
                                     <div>

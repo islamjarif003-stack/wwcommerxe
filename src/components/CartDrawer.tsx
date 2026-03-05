@@ -112,7 +112,7 @@ export function CartDrawer() {
 
                                     <div className="flex items-end justify-between mt-auto pt-3">
                                         <div className="font-bold text-lg text-[var(--primary)]">
-                                            ৳{item.totalPrice.toLocaleString()}
+                                            $ / ৳{item.totalPrice.toLocaleString()}
                                         </div>
 
                                         {/* Qty controls */}
@@ -143,7 +143,7 @@ export function CartDrawer() {
                     <div className="p-4 border-t border-[var(--border)] space-y-3">
                         <div className="flex justify-between items-center">
                             <span className="text-[var(--text-secondary)] font-bold">Subtotal</span>
-                            <span className="font-bold text-lg text-[var(--primary)]">৳{cartTotal.toLocaleString()}</span>
+                            <span className="font-bold text-lg text-[var(--primary)]">$ / ৳{cartTotal.toLocaleString()}</span>
                         </div>
                         <p className="text-xs text-[var(--text-muted)] text-center">Delivery charge calculated at checkout</p>
                         <Link

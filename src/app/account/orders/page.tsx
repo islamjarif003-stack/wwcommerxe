@@ -142,7 +142,7 @@ export default function MyOrdersPage() {
 
                                                 <div style={{ textAlign: "right" }}>
                                                     <div style={{ fontSize: "18px", fontWeight: 800, color: "white", marginBottom: "4px" }}>
-                                                        ৳{order.total.toLocaleString()}
+                                                        $ / ৳{order.total.toLocaleString()}
                                                     </div>
                                                     <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600, textTransform: "uppercase" }}>
                                                         {order.paymentMethod?.toLowerCase() === "cod" ? "Cash on Delivery" : "Digital Payment"}

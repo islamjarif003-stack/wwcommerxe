@@ -96,7 +96,7 @@ export default function AdminUsersPage() {
                         { label: "Total Users", value: stats.total, icon: Users, color: "#6366f1" },
                         { label: "Admins", value: stats.admins, icon: Shield, color: "#f43f5e" },
                         { label: "Customers", value: stats.customers, icon: User, color: "#10b981" },
-                        { label: "Total Revenue", value: `৳${stats.totalRevenue.toLocaleString()}`, icon: TrendingUp, color: "#f59e0b" },
+                        { label: "Total Revenue", value: `$ / ৳${stats.totalRevenue.toLocaleString()}`, icon: TrendingUp, color: "#f59e0b" },
                     ].map(s => {
                         const Icon = s.icon;
                         return (
@@ -264,7 +264,7 @@ export default function AdminUsersPage() {
                                             {/* Spent */}
                                             <td style={{ padding: "14px 16px" }}>
                                                 <span style={{ fontSize: "13px", fontWeight: 700, color: (user.totalSpent || 0) > 0 ? "#a5b4fc" : "var(--text-muted)" }}>
-                                                    ৳{(user.totalSpent || 0).toLocaleString()}
+                                                    $ / ৳{(user.totalSpent || 0).toLocaleString()}
                                                 </span>
                                             </td>
 

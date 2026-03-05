@@ -150,7 +150,7 @@ export default function AdminOrdersPage() {
                                             </div>
                                         </td>
                                         <td className="text-xs text-[var(--text-muted)]">{order.items.length} item(s)</td>
-                                        <td className="font-semibold text-[var(--text-primary)]">৳{order.total.toLocaleString()}</td>
+                                        <td className="font-semibold text-[var(--text-primary)]">$ / ৳{order.total.toLocaleString()}</td>
                                         <td>
                                             <span className="badge badge-ghost text-[10px] uppercase">{order.paymentMethod}</span>
                                         </td>
@@ -226,14 +226,14 @@ export default function AdminOrdersPage() {
                                     {item.image && <img src={item.image} alt={item.name} className="w-10 h-10 rounded-lg object-cover" />}
                                     <div className="flex-1">
                                         <p className="text-sm text-[var(--text-primary)]">{item.name}</p>
-                                        <p className="text-xs text-[var(--text-muted)]">×{item.quantity} · ৳{item.unitPrice.toLocaleString()} each</p>
+                                        <p className="text-xs text-[var(--text-muted)]">×{item.quantity} · $ / ৳{item.unitPrice.toLocaleString()} each</p>
                                     </div>
-                                    <p className="font-bold text-[var(--text-primary)] text-sm">৳{item.totalPrice.toLocaleString()}</p>
+                                    <p className="font-bold text-[var(--text-primary)] text-sm">$ / ৳{item.totalPrice.toLocaleString()}</p>
                                 </div>
                             ))}
                             <div className="flex justify-between text-sm font-bold mt-3 pt-3 border-t border-[var(--border)]">
                                 <span className="text-[var(--text-muted)]">Total</span>
-                                <span className="text-[var(--text-primary)]">৳{selected.total.toLocaleString()}</span>
+                                <span className="text-[var(--text-primary)]">$ / ৳{selected.total.toLocaleString()}</span>
                             </div>
                         </div>
 

@@ -255,11 +255,11 @@ export function ProductCard({ product }: ProductCardProps) {
                     {/* Price row */}
                     <div style={{ display: "flex", alignItems: "center", gap: "7px", flexWrap: "wrap", marginTop: "auto" }}>
                         <span style={{ fontSize: "16px", fontWeight: 800, color: "var(--text-primary)" }}>
-                            ৳{product.basePrice.toLocaleString()}
+                            $ / ৳{product.basePrice.toLocaleString()}
                         </span>
                         {product.comparePrice && (
                             <span style={{ fontSize: "12px", color: "var(--text-muted)", textDecoration: "line-through" }}>
-                                ৳{product.comparePrice.toLocaleString()}
+                                $ / ৳{product.comparePrice.toLocaleString()}
                             </span>
                         )}
                         {discount > 0 && (

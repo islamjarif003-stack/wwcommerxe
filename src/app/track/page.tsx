@@ -456,7 +456,7 @@ function TrackContent() {
                                             </div>
                                             <div style={{ textAlign: "right", flexShrink: 0 }}>
                                                 <p style={{ fontSize: "13px", fontWeight: 700, color: "var(--text-primary)" }}>
-                                                    ৳{item.totalPrice.toLocaleString()}
+                                                    $ / ৳{item.totalPrice.toLocaleString()}
                                                 </p>
                                                 <p style={{ fontSize: "11px", color: "var(--text-muted)" }}>×{item.quantity}</p>
                                             </div>
@@ -470,9 +470,9 @@ function TrackContent() {
                                     padding: "16px 20px", display: "flex", flexDirection: "column", gap: "8px",
                                 }}>
                                     {[
-                                        { label: "Subtotal", value: `৳${order.subtotal?.toLocaleString() || 0}` },
-                                        { label: "Delivery", value: order.deliveryCharge === 0 ? "FREE" : `৳${order.deliveryCharge}` },
-                                        ...(order.discount > 0 ? [{ label: "Discount", value: `-৳${order.discount}` }] : []),
+                                        { label: "Subtotal", value: `$ / ৳${order.subtotal?.toLocaleString() || 0}` },
+                                        { label: "Delivery", value: order.deliveryCharge === 0 ? "FREE" : `$ / ৳${order.deliveryCharge}` },
+                                        ...(order.discount > 0 ? [{ label: "Discount", value: `-$ / ৳${order.discount}` }] : []),
                                     ].map((row) => (
                                         <div key={row.label} style={{ display: "flex", justifyContent: "space-between" }}>
                                             <span style={{ fontSize: "13px", color: "var(--text-muted)" }}>{row.label}</span>
@@ -482,7 +482,7 @@ function TrackContent() {
                                     <div style={{ display: "flex", justifyContent: "space-between", paddingTop: "10px", borderTop: "1px solid var(--border)", marginTop: "4px" }}>
                                         <span style={{ fontSize: "15px", fontWeight: 800, color: "var(--text-primary)" }}>Total</span>
                                         <span style={{ fontSize: "17px", fontWeight: 900, background: "linear-gradient(135deg,#6366f1,#a855f7)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-                                            ৳{order.total?.toLocaleString()}
+                                            $ / ৳{order.total?.toLocaleString()}
                                         </span>
                                     </div>
                                 </div>
