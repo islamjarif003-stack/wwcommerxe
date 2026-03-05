@@ -91,7 +91,7 @@ export default function LoginPage() {
                     boxShadow: "0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03)",
                 }}>
                     <div style={{ marginBottom: "28px" }}>
-                        <h1 style={{ fontSize: "26px", fontWeight: 900, color: "white", letterSpacing: "-0.02em", marginBottom: "6px" }}>
+                        <h1 style={{ fontSize: "26px", fontWeight: 900, color: "var(--text-primary)", letterSpacing: "-0.02em", marginBottom: "6px" }}>
                             Welcome back
                         </h1>
                         <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>Sign in to your account</p>
@@ -116,9 +116,9 @@ export default function LoginPage() {
                                     style={{
                                         width: "100%", height: "48px",
                                         paddingLeft: "44px", paddingRight: "16px",
-                                        background: "rgba(255,255,255,0.04)",
+                                        background: "var(--bg-elevated)",
                                         border: `1px solid ${focusEmail ? "rgba(99,102,241,0.5)" : "var(--border)"}`,
-                                        borderRadius: "12px", color: "white", fontSize: "14px",
+                                        borderRadius: "12px", color: "var(--text-primary)", fontSize: "14px",
                                         fontFamily: "inherit", outline: "none", transition: "border-color 0.2s",
                                     }}
                                 />
@@ -148,9 +148,9 @@ export default function LoginPage() {
                                     style={{
                                         width: "100%", height: "48px",
                                         paddingLeft: "44px", paddingRight: "48px",
-                                        background: "rgba(255,255,255,0.04)",
+                                        background: "var(--bg-elevated)",
                                         border: `1px solid ${focusPass ? "rgba(99,102,241,0.5)" : "var(--border)"}`,
-                                        borderRadius: "12px", color: "white", fontSize: "14px",
+                                        borderRadius: "12px", color: "var(--text-primary)", fontSize: "14px",
                                         fontFamily: "inherit", outline: "none", transition: "border-color 0.2s",
                                     }}
                                 />

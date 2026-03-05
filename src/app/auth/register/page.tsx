@@ -103,7 +103,7 @@ export default function RegisterPage() {
                     boxShadow: "0 32px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03)",
                 }}>
                     <div style={{ marginBottom: "28px" }}>
-                        <h1 style={{ fontSize: "26px", fontWeight: 900, color: "white", letterSpacing: "-0.02em", marginBottom: "6px" }}>
+                        <h1 style={{ fontSize: "26px", fontWeight: 900, color: "var(--text-primary)", letterSpacing: "-0.02em", marginBottom: "6px" }}>
                             Create account
                         </h1>
                         <p style={{ fontSize: "14px", color: "var(--text-muted)" }}>Join thousands of happy customers</p>
@@ -132,9 +132,9 @@ export default function RegisterPage() {
                                         style={{
                                             width: "100%", height: "48px",
                                             paddingLeft: "44px", paddingRight: "16px",
-                                            background: "rgba(255,255,255,0.04)",
+                                            background: "var(--bg-elevated)",
                                             border: `1px solid ${focusField === field.key ? "rgba(99,102,241,0.5)" : "var(--border)"}`,
-                                            borderRadius: "12px", color: "white", fontSize: "14px",
+                                            borderRadius: "12px", color: "var(--text-primary)", fontSize: "14px",
                                             fontFamily: "inherit", outline: "none", transition: "border-color 0.2s",
                                         }}
                                     />
@@ -163,9 +163,9 @@ export default function RegisterPage() {
                                     style={{
                                         width: "100%", height: "48px",
                                         paddingLeft: "44px", paddingRight: "48px",
-                                        background: "rgba(255,255,255,0.04)",
+                                        background: "var(--bg-elevated)",
                                         border: `1px solid ${focusField === "password" ? "rgba(99,102,241,0.5)" : "var(--border)"}`,
-                                        borderRadius: "12px", color: "white", fontSize: "14px",
+                                        borderRadius: "12px", color: "var(--text-primary)", fontSize: "14px",
                                         fontFamily: "inherit", outline: "none", transition: "border-color 0.2s",
                                     }}
                                 />
@@ -219,15 +219,15 @@ export default function RegisterPage() {
                                     style={{
                                         width: "100%", height: "48px",
                                         paddingLeft: "44px", paddingRight: "48px",
-                                        background: "rgba(255,255,255,0.04)",
+                                        background: "var(--bg-elevated)",
                                         border: `1px solid ${focusField === "confirm" ? "rgba(99,102,241,0.5)"
-                                                : form.confirmPassword && form.password !== form.confirmPassword
-                                                    ? "rgba(239,68,68,0.4)"
-                                                    : form.confirmPassword && form.password === form.confirmPassword
-                                                        ? "rgba(16,185,129,0.4)"
-                                                        : "var(--border)"
+                                            : form.confirmPassword && form.password !== form.confirmPassword
+                                                ? "rgba(239,68,68,0.4)"
+                                                : form.confirmPassword && form.password === form.confirmPassword
+                                                    ? "rgba(16,185,129,0.4)"
+                                                    : "var(--border)"
                                             }`,
-                                        borderRadius: "12px", color: "white", fontSize: "14px",
+                                        borderRadius: "12px", color: "var(--text-primary)", fontSize: "14px",
                                         fontFamily: "inherit", outline: "none", transition: "border-color 0.2s",
                                     }}
                                 />
