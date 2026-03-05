@@ -11,6 +11,7 @@ import { usePrice } from "@/hooks/usePrice";
 export default function AdminProductsPage() {
     const { formatPrice } = usePrice();
     const [products, setProducts] = useState<any[]>([]);
+    const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
     const [pagination, setPagination] = useState({ page: 1, total: 0, totalPages: 1 });
     const [isLoading, setIsLoading] = useState(true);
@@ -38,6 +39,7 @@ export default function AdminProductsPage() {
         api.admin.products.list(params)
             .then((res) => {
                 setProducts(res.data.items || []);
+                setSelectedIds([]);
                 setCategories(res.data.categories || []);
                 setPagination({ page: res.data.page, total: res.data.total, totalPages: res.data.totalPages });
             })
@@ -102,10 +104,39 @@ export default function AdminProductsPage() {
         if (!confirm(`Delete "${name}"?`)) return;
         try {
             await api.admin.products.delete(id);
+            setSelectedIds((prev) => prev.filter((x) => x !== id));
             toast.success("Product deleted");
             load();
         } catch { toast.error("Delete failed"); }
     };
+
+    const handleBulkDelete = async () => {
+        if (!selectedIds.length) {
+            toast.error("No product selected");
+            return;
+        }
+        if (!confirm(`Delete ${selectedIds.length} selected products?`)) return;
+
+        const ids = [...selectedIds];
+        const results = await Promise.all(
+            ids.map((id) =>
+                api.admin.products.delete(id)
+                    .then(() => ({ ok: true }))
+                    .catch(() => ({ ok: false }))
+            )
+        );
+
+        const successCount = results.filter((r) => r.ok).length;
+        const failedCount = results.length - successCount;
+
+        if (successCount > 0) toast.success(`Deleted ${successCount} product(s)`);
+        if (failedCount > 0) toast.error(`${failedCount} product(s) failed to delete`);
+
+        setSelectedIds([]);
+        load(pagination.page);
+    };
+
+    const allOnPageSelected = products.length > 0 && products.every((p: any) => selectedIds.includes(p.id));
 
     const toggleFeatured = async (product: any) => {
         try {
@@ -181,6 +212,13 @@ export default function AdminProductsPage() {
                     <button onClick={openCreate} className="btn-primary text-sm">
                         <Plus size={16} /> Add Product
                     </button>
+                    <button
+                        onClick={handleBulkDelete}
+                        disabled={selectedIds.length === 0}
+                        className="btn-secondary text-sm disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                        <Trash2 size={14} /> Delete Selected ({selectedIds.length})
+                    </button>
                 </div>
             </div>
 
@@ -252,6 +290,19 @@ export default function AdminProductsPage() {
                     <table className="table-base">
                         <thead>
                             <tr>
+                                <th>
+                                    <input
+                                        type="checkbox"
+                                        checked={allOnPageSelected}
+                                        onChange={(e) => {
+                                            if (e.target.checked) {
+                                                setSelectedIds(Array.from(new Set([...selectedIds, ...products.map((p: any) => p.id)])));
+                                            } else {
+                                                setSelectedIds((prev) => prev.filter((id) => !products.some((p: any) => p.id === id)));
+                                            }
+                                        }}
+                                    />
+                                </th>
                                 <th>Product</th>
                                 <th>SKU</th>
                                 <th>Price</th>
@@ -265,12 +316,22 @@ export default function AdminProductsPage() {
                         <tbody>
                             {isLoading ? (
                                 [...Array(8)].map((_, i) => (
-                                    <tr key={i}>{[...Array(8)].map((_, j) => <td key={j}><div className="skeleton h-4 rounded" /></td>)}</tr>
+                                    <tr key={i}>{[...Array(9)].map((_, j) => <td key={j}><div className="skeleton h-4 rounded" /></td>)}</tr>
                                 ))
                             ) : products.length === 0 ? (
-                                <tr><td colSpan={8} className="text-center py-12 text-[var(--text-muted)]">No products found</td></tr>
+                                <tr><td colSpan={9} className="text-center py-12 text-[var(--text-muted)]">No products found</td></tr>
                             ) : products.map((p: any) => (
                                 <tr key={p.id}>
+                                    <td>
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedIds.includes(p.id)}
+                                            onChange={(e) => {
+                                                if (e.target.checked) setSelectedIds((prev) => [...prev, p.id]);
+                                                else setSelectedIds((prev) => prev.filter((id) => id !== p.id));
+                                            }}
+                                        />
+                                    </td>
                                     <td>
                                         <div className="flex items-center gap-3">
                                             {p.images[0] && <img src={p.images[0]} alt={p.name} className="w-10 h-10 rounded-lg object-cover" />}
