@@ -26,14 +26,14 @@ export default function LoginPage() {
             if (res.data.token) {
                 setAuth(res.data.user, res.data.token, res.data.refreshToken);
                 toast.success(`Welcome back, ${res.data.user.name.split(" ")[0]}! 👋`, {
-                    style: { background: "#13131f", color: "#f0f0fa", border: "1px solid rgba(99,102,241,0.3)" },
+                    style: { background: "#FFFDFC", color: "#172B26", border: "1px solid rgba(46,105,85,0.35)" },
                 });
                 const isAdmin = ["admin", "superadmin", "manager"].includes(res.data.user.role);
                 router.replace(isAdmin ? "/admin" : "/");
             }
         } catch (err: any) {
-            toast.error(err?.response?.data?.error || "Invalid credentials", {
-                style: { background: "#13131f", color: "#f0f0fa", border: "1px solid rgba(239,68,68,0.3)" },
+            toast.error(err?.response?.data?.error || err?.message || "Invalid credentials", {
+                style: { background: "#FFFDFC", color: "#172B26", border: "1px solid rgba(179,74,64,0.4)" },
             });
         } finally {
             setLoading(false);
@@ -76,7 +76,7 @@ export default function LoginPage() {
                         </div>
                         <span style={{
                             fontSize: "22px", fontWeight: 900,
-                            background: "linear-gradient(135deg, #a5b4fc, #c084fc)",
+                            background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
                             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
                         }}>WW Commerce</span>
                     </Link>
@@ -129,9 +129,9 @@ export default function LoginPage() {
                         <div style={{ marginBottom: "24px" }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
                                 <label style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-secondary)" }}>Password</label>
-                                <Link href="#" style={{ fontSize: "12px", color: "#818cf8", fontWeight: 600, textDecoration: "none" }}
-                                    onMouseEnter={e => (e.currentTarget.style.color = "#a5b4fc")}
-                                    onMouseLeave={e => (e.currentTarget.style.color = "#818cf8")}>
+                                <Link href="#" style={{ fontSize: "12px", color: "#4f46e5", fontWeight: 600, textDecoration: "none" }}
+                                    onMouseEnter={e => (e.currentTarget.style.color = "#4338ca")}
+                                    onMouseLeave={e => (e.currentTarget.style.color = "#4f46e5")}>
                                     Forgot password?
                                 </Link>
                             </div>
@@ -195,8 +195,8 @@ export default function LoginPage() {
                         borderRadius: "12px",
                     }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
-                            <Shield size={13} color="#818cf8" />
-                            <span style={{ fontSize: "11px", fontWeight: 700, color: "#818cf8", textTransform: "uppercase", letterSpacing: "0.5px" }}>Demo Admin Account</span>
+                            <Shield size={13} color="#4f46e5" />
+                            <span style={{ fontSize: "11px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase", letterSpacing: "0.5px" }}>Demo Admin Account</span>
                         </div>
                         <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
                             {[
@@ -209,7 +209,7 @@ export default function LoginPage() {
                                         if (item.k === "Email") setEmail(item.v);
                                         else setPassword(item.v);
                                     }} style={{
-                                        fontSize: "12px", color: "#a5b4fc", fontFamily: "inherit",
+                                        fontSize: "12px", color: "#4f46e5", fontFamily: "inherit",
                                         background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)",
                                         padding: "2px 8px", borderRadius: "5px", cursor: "pointer",
                                         fontWeight: 600,
@@ -221,9 +221,9 @@ export default function LoginPage() {
 
                     <p style={{ textAlign: "center", marginTop: "20px", fontSize: "13px", color: "var(--text-muted)" }}>
                         Don't have an account?{" "}
-                        <Link href="/auth/register" style={{ color: "#818cf8", fontWeight: 700 }}
-                            onMouseEnter={e => (e.currentTarget.style.color = "#a5b4fc")}
-                            onMouseLeave={e => (e.currentTarget.style.color = "#818cf8")}>
+                        <Link href="/auth/register" style={{ color: "#4f46e5", fontWeight: 700 }}
+                            onMouseEnter={e => (e.currentTarget.style.color = "#4338ca")}
+                            onMouseLeave={e => (e.currentTarget.style.color = "#4f46e5")}>
                             Create account →
                         </Link>
                     </p>

@@ -58,9 +58,9 @@ export default function MyOrdersPage() {
                         <User size={28} style={{ color: "#a78bfa" }} />
                     </div>
                     <div>
-                        <h1 style={{ fontSize: "28px", fontWeight: 800, color: "white", margin: "0 0 4px 0" }}>My Account</h1>
+                        <h1 style={{ fontSize: "28px", fontWeight: 800, color: "var(--text-primary)", margin: "0 0 4px 0" }}>My Account</h1>
                         <p style={{ fontSize: "14px", color: "var(--text-muted)", margin: 0 }}>
-                            Welcome back, <span style={{ color: "white", fontWeight: 600 }}>{user?.name || "Customer"}</span>
+                            Welcome back, <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{user?.name || "Customer"}</span>
                         </p>
                     </div>
                 </div>
@@ -72,7 +72,7 @@ export default function MyOrdersPage() {
                         <div style={{
                             display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px"
                         }}>
-                            <h2 style={{ fontSize: "18px", fontWeight: 700, color: "white", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
+                            <h2 style={{ fontSize: "18px", fontWeight: 700, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
                                 <ShoppingBag size={18} color="#a78bfa" /> Your Orders
                             </h2>
                             <span style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: 600, background: "rgba(255,255,255,0.05)", padding: "4px 12px", borderRadius: "20px" }}>
@@ -98,7 +98,7 @@ export default function MyOrdersPage() {
                                 }}>
                                     <Package size={36} color="var(--text-muted)" />
                                 </div>
-                                <h3 style={{ fontSize: "20px", fontWeight: 800, color: "white", marginBottom: "8px" }}>No orders yet</h3>
+                                <h3 style={{ fontSize: "20px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "8px" }}>No orders yet</h3>
                                 <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "24px" }}>
                                     You haven't placed any orders. Start exploring products!
                                 </p>
@@ -127,7 +127,7 @@ export default function MyOrdersPage() {
                                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
                                                 <div>
                                                     <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "8px" }}>
-                                                        <span style={{ fontSize: "15px", fontWeight: 800, color: "white", fontFamily: "monospace", letterSpacing: "0.5px" }}>
+                                                        <span style={{ fontSize: "15px", fontWeight: 800, color: "var(--text-primary)", fontFamily: "monospace", letterSpacing: "0.5px" }}>
                                                             #{order.orderNumber}
                                                         </span>
                                                         <span style={{
@@ -143,7 +143,7 @@ export default function MyOrdersPage() {
                                                 </div>
 
                                                 <div style={{ textAlign: "right" }}>
-                                                    <div style={{ fontSize: "18px", fontWeight: 800, color: "white", marginBottom: "4px" }}>
+                                                    <div style={{ fontSize: "18px", fontWeight: 800, color: "var(--text-primary)", marginBottom: "4px" }}>
                                                         {formatPrice(order.total.toLocaleString())}
                                                     </div>
                                                     <div style={{ fontSize: "12px", color: "var(--text-muted)", fontWeight: 600, textTransform: "uppercase" }}>
@@ -152,11 +152,11 @@ export default function MyOrdersPage() {
                                                 </div>
                                             </div>
 
-                                            <div style={{ height: "1px", background: "rgba(255,255,255,0.05)", margin: "16px 0" }} />
+                                            <div style={{ height: "1px", background: "var(--border)", margin: "16px 0" }} />
 
                                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                                                 <div style={{ fontSize: "13px", color: "var(--text-muted)" }}>
-                                                    <span style={{ color: "white", fontWeight: 600 }}>{order.items?.length || 0}</span> items in this order
+                                                    <span style={{ color: "var(--text-primary)", fontWeight: 600 }}>{order.items?.length || 0}</span> items in this order
                                                 </div>
 
                                                 <Link href={`/track?order=${order.orderNumber}&phone=${order.customerPhone}`} style={{

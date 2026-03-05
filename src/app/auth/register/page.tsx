@@ -44,12 +44,12 @@ export default function RegisterPage() {
             const res = await api.auth.register({ name: form.name, email: form.email, phone: form.phone, password: form.password });
             setAuth(res.data.user, res.data.token, res.data.refreshToken);
             toast.success(`Welcome to WW Commerce, ${res.data.user.name}! 🎉`, {
-                style: { background: "#13131f", color: "#f0f0fa", border: "1px solid rgba(99,102,241,0.3)" },
+                style: { background: "#FFFDFC", color: "#172B26", border: "1px solid rgba(46,105,85,0.35)" },
             });
             router.push("/");
         } catch (err: any) {
             toast.error(err?.response?.data?.error || err.message || "Registration failed", {
-                style: { background: "#13131f", color: "#f0f0fa", border: "1px solid rgba(239,68,68,0.3)" },
+                style: { background: "#FFFDFC", color: "#172B26", border: "1px solid rgba(179,74,64,0.4)" },
             });
         } finally {
             setIsLoading(false);
@@ -90,7 +90,7 @@ export default function RegisterPage() {
                         </div>
                         <span style={{
                             fontSize: "22px", fontWeight: 900,
-                            background: "linear-gradient(135deg, #a5b4fc, #c084fc)",
+                            background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
                             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
                         }}>WW Commerce</span>
                     </Link>
@@ -265,9 +265,9 @@ export default function RegisterPage() {
 
                     <p style={{ textAlign: "center", marginTop: "20px", fontSize: "13px", color: "var(--text-muted)" }}>
                         Already have an account?{" "}
-                        <Link href="/auth/login" style={{ color: "#818cf8", fontWeight: 700, textDecoration: "none" }}
-                            onMouseEnter={e => (e.currentTarget.style.color = "#a5b4fc")}
-                            onMouseLeave={e => (e.currentTarget.style.color = "#818cf8")}>
+                        <Link href="/auth/login" style={{ color: "#4f46e5", fontWeight: 700, textDecoration: "none" }}
+                            onMouseEnter={e => (e.currentTarget.style.color = "#4338ca")}
+                            onMouseLeave={e => (e.currentTarget.style.color = "#4f46e5")}>
                             Sign in →
                         </Link>
                     </p>
