@@ -24,8 +24,17 @@ export default function MyOrdersPage() {
     const router = useRouter();
     const [orders, setOrders] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        // Allow a slight delay for Zustand to hydrate local storage
+        const timer = setTimeout(() => setMounted(true), 50);
+        return () => clearTimeout(timer);
+    }, []);
+
+    useEffect(() => {
+        if (!mounted) return;
+
         // Redirect if not logged in
         if (!token) {
             router.push(`/auth/login?redirect=/account/orders`);
@@ -37,9 +46,15 @@ export default function MyOrdersPage() {
             .then(res => setOrders(res.data || []))
             .catch(err => console.error("Failed to load orders:", err))
             .finally(() => setIsLoading(false));
-    }, [token, router]);
+    }, [mounted, token, router]);
 
-    if (!token) return null; // Prevent flash of content before redirect
+    if (!mounted || !token) {
+        return (
+            <div style={{ minHeight: "100vh", background: "var(--bg-base)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <div className="skeleton" style={{ width: "60px", height: "60px", borderRadius: "50%" }}></div>
+            </div>
+        );
+    }
 
     return (
         <div style={{ minHeight: "100vh", background: "var(--bg-base)" }}>
@@ -51,11 +66,11 @@ export default function MyOrdersPage() {
                 <div style={{ display: "flex", alignItems: "center", gap: "16px", marginBottom: "32px" }}>
                     <div style={{
                         width: "56px", height: "56px", borderRadius: "16px",
-                        background: "linear-gradient(135deg, rgba(99,102,241,0.2), rgba(168,85,247,0.2))",
+                        background: "var(--primary-glow)",
                         display: "flex", alignItems: "center", justifyContent: "center",
-                        border: "1px solid rgba(99,102,241,0.3)",
+                        border: "1px solid var(--border-accent)",
                     }}>
-                        <User size={28} style={{ color: "#a78bfa" }} />
+                        <User size={28} style={{ color: "var(--primary)" }} />
                     </div>
                     <div>
                         <h1 style={{ fontSize: "28px", fontWeight: 800, color: "var(--text-primary)", margin: "0 0 4px 0" }}>My Account</h1>
@@ -73,7 +88,7 @@ export default function MyOrdersPage() {
                             display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px"
                         }}>
                             <h2 style={{ fontSize: "18px", fontWeight: 700, color: "var(--text-primary)", display: "flex", alignItems: "center", gap: "8px", margin: 0 }}>
-                                <ShoppingBag size={18} color="#a78bfa" /> Your Orders
+                                <ShoppingBag size={18} color="var(--primary)" /> Your Orders
                             </h2>
                             <span style={{ fontSize: "13px", color: "var(--text-muted)", fontWeight: 600, background: "rgba(255,255,255,0.05)", padding: "4px 12px", borderRadius: "20px" }}>
                                 {orders.length} Total
@@ -102,12 +117,7 @@ export default function MyOrdersPage() {
                                 <p style={{ fontSize: "14px", color: "var(--text-muted)", marginBottom: "24px" }}>
                                     You haven't placed any orders. Start exploring products!
                                 </p>
-                                <Link href="/shop" style={{
-                                    display: "inline-block", padding: "12px 24px", borderRadius: "12px",
-                                    background: "linear-gradient(135deg, #6366f1, #8b5cf6)",
-                                    color: "white", fontWeight: 700, fontSize: "14px", textDecoration: "none",
-                                    boxShadow: "0 8px 20px rgba(99,102,241,0.3)"
-                                }}>
+                                <Link href="/shop" className="btn-primary" style={{ display: "inline-flex", padding: "12px 24px", justifyContent: "center" }}>
                                     Start Shopping
                                 </Link>
                             </div>
@@ -121,7 +131,7 @@ export default function MyOrdersPage() {
                                             background: "var(--bg-card)", border: "1px solid var(--border)",
                                             borderRadius: "16px", padding: "20px", transition: "transform 0.2s ease, border-color 0.2s ease",
                                         }}
-                                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(99,102,241,0.4)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
+                                            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border-accent)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
                                             onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "var(--border)"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
                                         >
                                             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
@@ -161,7 +171,7 @@ export default function MyOrdersPage() {
 
                                                 <Link href={`/track?order=${order.orderNumber}&phone=${order.customerPhone}`} style={{
                                                     display: "flex", alignItems: "center", gap: "6px",
-                                                    fontSize: "13px", fontWeight: 700, color: "#a78bfa", textDecoration: "none"
+                                                    fontSize: "13px", fontWeight: 700, color: "var(--primary)", textDecoration: "none"
                                                 }}>
                                                     Track Details <ChevronRight size={14} />
                                                 </Link>

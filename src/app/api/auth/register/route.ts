@@ -29,6 +29,16 @@ export async function POST(req: NextRequest) {
             }
         });
 
+        // Generate email verification token independently from auth tokens
+        const jwt = require("jsonwebtoken");
+        if (process.env.JWT_SECRET) {
+            const verifyToken = jwt.sign({ email: user.email }, process.env.JWT_SECRET, { expiresIn: "2h" });
+            const { sendVerificationEmail } = require("@/lib/email");
+            await sendVerificationEmail(user.email, verifyToken);
+        } else {
+            console.error("JWT_SECRET missing, cannot send verification email.");
+        }
+
         const { token, refreshToken } = generateTokens({ id: user.id, email: user.email, role: user.role });
         const { password: _, ...userSafe } = user;
         return NextResponse.json({ success: true, data: { user: userSafe, token, refreshToken } }, { status: 201 });

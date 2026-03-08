@@ -43,8 +43,9 @@ export default function RegisterPage() {
         try {
             const res = await api.auth.register({ name: form.name, email: form.email, phone: form.phone, password: form.password });
             setAuth(res.data.user, res.data.token, res.data.refreshToken);
-            toast.success(`Welcome to Moon IT Shop, ${res.data.user.name}! 🎉`, {
+            toast.success(`Welcome, ${res.data.user.name}! Please check your email to verify your account.`, {
                 style: { background: "#FFFDFC", color: "#172B26", border: "1px solid rgba(46,105,85,0.35)" },
+                duration: 5000,
             });
             const params = new URLSearchParams(window.location.search);
             const redirect = params.get("redirect");
