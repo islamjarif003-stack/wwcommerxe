@@ -94,11 +94,13 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                 {/* Logo */}
                 <div className="p-5 border-b border-[var(--border)]">
                     <Link href="/admin" className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-[var(--primary)] flex items-center justify-center">
-                            <Zap size={16} className="text-white" />
-                        </div>
+                        <img
+                            src="/logo_transparent.png"
+                            alt="Moon IT Shop"
+                            className="w-10 h-10 object-contain mr-1"
+                        />
                         <div>
-                            <p className="font-bold text-[var(--text-primary)] text-sm">WW Commerce</p>
+                            <p className="font-bold text-[var(--text-primary)] text-sm">Moon IT Shop</p>
                             <p className="text-xs text-[var(--text-muted)]">Admin Panel</p>
                         </div>
                     </Link>
@@ -176,7 +178,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                             <p className="text-sm font-semibold text-[var(--text-primary)] capitalize">
                                 {NAV_ITEMS.find((n) => n.href === pathname || (n.href !== "/admin" && pathname.startsWith(n.href)))?.label || "Admin"}
                             </p>
-                            <p className="text-xs text-[var(--text-muted)]">WW Commerce Control Center</p>
+                            <p className="text-xs text-[var(--text-muted)]">Moon IT Shop Control Center</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">

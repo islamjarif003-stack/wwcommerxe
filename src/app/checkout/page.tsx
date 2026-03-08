@@ -5,7 +5,7 @@ import { useCartStore } from "@/store/cartStore";
 import { useAuthStore } from "@/store/authStore";
 import { api } from "@/lib/apiClient";
 import { BANGLADESH_DISTRICTS, DHAKA_CITY_AREAS } from "@/lib/delivery";
-import { ShoppingCart, Truck, CreditCard, CheckCircle, ArrowLeft, Package } from "lucide-react";
+import { ShoppingCart, Truck, CreditCard, CheckCircle, ArrowLeft, Package, Shield } from "lucide-react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -18,6 +18,19 @@ function CheckoutContent() {
     const itemCount = useCartStore((s) => s.itemCount());
     const { user } = useAuthStore();
     const router = useRouter();
+
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (!mounted) return;
+        if (!user) {
+            toast.error("Please login to continue checkout");
+            router.replace("/auth/login?redirect=/checkout");
+        }
+    }, [mounted, user, router]);
 
     const [form, setForm] = useState({
         name: user?.name || "",
@@ -128,6 +141,20 @@ function CheckoutContent() {
                             {user && <Link href="/account/orders" className="btn-secondary">View My Orders</Link>}
                         </div>
                     </div>
+                </div>
+            </div>
+        );
+    }
+
+    if (!mounted || !user) {
+        return (
+            <div className="min-h-screen">
+                <Navbar />
+                <div className="page-container pb-16 text-center flex flex-col items-center justify-center min-h-[50vh]" style={{ paddingTop: "140px" }}>
+                    <div className="w-12 h-12 rounded-xl bg-[var(--primary)] flex items-center justify-center mb-4 animate-pulse">
+                        <Shield size={24} className="text-white" />
+                    </div>
+                    <p className="text-[var(--text-muted)]">Verifying account...</p>
                 </div>
             </div>
         );

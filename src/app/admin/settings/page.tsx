@@ -56,7 +56,7 @@ interface SecuritySettings {
 
 /* ─────────────────── defaults ─────────────────── */
 const DEFAULT_STORE: StoreSettings = {
-    storeName: "WW Commerce",
+    storeName: "Moon IT Shop",
     tagline: "Bangladesh's Smart Shopping Platform",
     email: "support@wwcommerce.bd",
     phone: "+880 1700-000000",
@@ -283,7 +283,7 @@ export default function SettingsPage() {
                     <>
                         <SectionCard title="Store Identity" icon={Globe}>
                             <FieldRow label="Store Name" hint="Displayed across the site and emails">
-                                <Input value={store.storeName} onChange={v => setStore(s => ({ ...s, storeName: v }))} placeholder="WW Commerce" />
+                                <Input value={store.storeName} onChange={v => setStore(s => ({ ...s, storeName: v }))} placeholder="Moon IT Shop" />
                             </FieldRow>
                             <FieldRow label="Tagline" hint="Short slogan shown in hero section">
                                 <Input value={store.tagline} onChange={v => setStore(s => ({ ...s, tagline: v }))} placeholder="Bangladesh's Smart Shopping Platform" />

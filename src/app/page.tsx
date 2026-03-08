@@ -521,18 +521,15 @@ export default function HomePage() {
           <div className="footer-grid">
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                <div style={{
-                  width: "36px", height: "36px", borderRadius: "10px",
-                  background: "var(--primary)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  boxShadow: "var(--shadow-sm)",
-                }}>
-                  <Zap size={18} color="white" />
-                </div>
+                <img
+                  src="/logo_transparent.png"
+                  alt="Moon IT Shop"
+                  style={{ width: "48px", height: "48px", objectFit: "contain", marginRight: "4px" }}
+                />
                 <span style={{
                   fontSize: "19px", fontWeight: 800,
                   color: "var(--text-primary)",
-                }}>WW Commerce</span>
+                }}>Moon IT Shop</span>
               </div>
               <p style={{ fontSize: "13px", color: "var(--text-muted)", lineHeight: 1.8, marginBottom: "20px", maxWidth: "280px" }}>
                 Bangladesh's most advanced AI-powered ecommerce platform. Smart shopping, fast delivery, guaranteed authentic products.
@@ -570,7 +567,7 @@ export default function HomePage() {
             borderTop: "1px solid var(--border)", paddingTop: "24px",
             display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "16px",
           }}>
-            <p style={{ fontSize: "13px", color: "var(--text-muted)" }}>© 2026 WW Commerce. All rights reserved.</p>
+            <p style={{ fontSize: "13px", color: "var(--text-muted)" }}>© 2026 Moon IT Shop. All rights reserved.</p>
             <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
               {[
                 { icon: Shield, label: "SSL Secured", color: "#818cf8" },

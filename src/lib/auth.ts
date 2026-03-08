@@ -1,5 +1,5 @@
 // ============================================================
-// WW Commerce OS – JWT Auth Utilities
+// Moon IT Shop OS – JWT Auth Utilities
 // ============================================================
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";

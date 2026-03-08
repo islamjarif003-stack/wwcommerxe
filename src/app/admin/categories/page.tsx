@@ -117,10 +117,10 @@ export default function AdminCategoriesPage() {
                     {categories.map((cat) => (
                         <div key={cat.id}>
                             {/* Root Category */}
-                            <div className="glass-card p-4" style={{ display: "flex", alignItems: "center", gap: "14px", borderLeft: "3px solid rgba(168,85,247,0.5)" }}>
+                            <div className="glass-card p-4" style={{ display: "flex", alignItems: "center", gap: "14px", borderLeft: "3px solid var(--primary)" }}>
                                 <div style={{
                                     width: "40px", height: "40px", borderRadius: "10px",
-                                    background: "rgba(168,85,247,0.15)", border: "1px solid rgba(168,85,247,0.2)",
+                                    background: "var(--primary-glow)", border: "1px solid var(--border-accent)",
                                     display: "flex", alignItems: "center", justifyContent: "center",
                                     fontSize: "20px", flexShrink: 0,
                                 }}>
@@ -129,7 +129,7 @@ export default function AdminCategoriesPage() {
                                 <div style={{ flex: 1, minWidth: 0 }}>
                                     <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                                         <p className="font-semibold text-[var(--text-primary)]">{cat.name}</p>
-                                        <span style={{ fontSize: "11px", padding: "2px 8px", borderRadius: "100px", background: "rgba(168,85,247,0.15)", color: "#c084fc" }}>
+                                        <span style={{ fontSize: "11px", padding: "2px 8px", borderRadius: "100px", background: "var(--primary-glow)", color: "var(--primary)" }}>
                                             /{cat.slug}
                                         </span>
                                         {!cat.isActive && <span className="badge-status" style={{ background: "rgba(239,68,68,0.15)", color: "#f87171", fontSize: "10px", padding: "2px 7px", borderRadius: "100px" }}>Inactive</span>}
@@ -158,13 +158,13 @@ export default function AdminCategoriesPage() {
                             {cat.children?.length > 0 && (
                                 <div style={{ marginLeft: "24px", borderLeft: "2px solid var(--border-subtle)", paddingLeft: "16px", marginTop: "4px", display: "flex", flexDirection: "column", gap: "6px" }}>
                                     {cat.children.map((sub: any) => (
-                                        <div key={sub.id} className="glass-card p-3" style={{ display: "flex", alignItems: "center", gap: "12px", borderLeft: "2px solid rgba(99,102,241,0.3)" }}>
+                                        <div key={sub.id} className="glass-card p-3" style={{ display: "flex", alignItems: "center", gap: "12px", borderLeft: "2px solid var(--primary)" }}>
                                             <ChevronRight size={12} style={{ color: "var(--text-muted)", flexShrink: 0 }} />
                                             <div style={{ fontSize: "16px" }}>{sub.icon || "📂"}</div>
                                             <div style={{ flex: 1, minWidth: 0 }}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                                    <p style={{ fontSize: "13px", fontWeight: 600, color: "rgba(255,255,255,0.85)" }}>{sub.name}</p>
-                                                    <span style={{ fontSize: "10px", padding: "1px 6px", borderRadius: "100px", background: "rgba(99,102,241,0.1)", color: "#a5b4fc" }}>
+                                                    <p style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-primary)" }}>{sub.name}</p>
+                                                    <span style={{ fontSize: "10px", padding: "1px 6px", borderRadius: "100px", background: "var(--primary-glow)", color: "var(--primary)" }}>
                                                         /{sub.slug}
                                                     </span>
                                                 </div>

@@ -5,11 +5,25 @@ import { generateOrderNumber, calculateDelivery } from "@/lib/delivery";
 
 export async function POST(req: NextRequest) {
     try {
+        const { verifyToken } = await import("@/lib/auth");
+        const authHeader = req.headers.get("authorization");
+        if (!authHeader?.startsWith("Bearer ")) {
+            return NextResponse.json({ success: false, error: "Authentication required to place an order" }, { status: 401 });
+        }
+
+        const payload = verifyToken(authHeader.slice(7));
+        if (!payload || !payload.id) {
+            return NextResponse.json({ success: false, error: "Invalid authentication token" }, { status: 401 });
+        }
+
         const body = await req.json();
         const {
             customerName, customerEmail, customerPhone,
             shippingAddress, items, paymentMethod, couponCode, notes, userId,
         } = body;
+
+        // Ensure user is the one placing their own order or at least authenticated
+        const actualUserId = payload.id as string;
 
         if (!customerName || !customerPhone || !shippingAddress || !items?.length)
             return NextResponse.json({ success: false, error: "Missing required order fields" }, { status: 400 });
@@ -61,7 +75,7 @@ export async function POST(req: NextRequest) {
             const createdOrder = await tx.order.create({
                 data: {
                     orderNumber: generateOrderNumber(),
-                    userId: userId || null,
+                    userId: actualUserId,
                     customerName, customerEmail, customerPhone,
                     shippingAddress: shippingAddress,
                     subtotal, deliveryCharge, discount, total,
@@ -96,16 +110,14 @@ export async function POST(req: NextRequest) {
             }
 
             // Update user stats
-            if (userId) {
-                await tx.user.update({
-                    where: { id: userId },
-                    data: {
-                        totalOrders: { increment: 1 },
-                        totalSpent: { increment: total },
-                        loyaltyPoints: { increment: Math.floor(total / 100) },
-                    }
-                });
-            }
+            await tx.user.update({
+                where: { id: actualUserId },
+                data: {
+                    totalOrders: { increment: 1 },
+                    totalSpent: { increment: total },
+                    loyaltyPoints: { increment: Math.floor(total / 100) },
+                }
+            });
 
             return createdOrder;
         });

@@ -97,7 +97,9 @@ export async function GET(req: Request) {
         // ── Flat list (default) ───────────────────────────────────────────
         // Used by navbar, shop page filter sidebar
         const cats = await prisma.$queryRaw<any[]>`
-            SELECT c.id, c.name, c.slug, c.image, c.icon, c."parentId", c."sortOrder",
+            SELECT c.id, c.name, c.slug, 
+                   COALESCE(c.image, (SELECT p.images[1] FROM "Product" p WHERE p."categoryId" = c.id LIMIT 1)) as image, 
+                   c.icon, c."parentId", c."sortOrder",
                 COUNT(DISTINCT p.id) AS "productCount"
             FROM "Category" c
             LEFT JOIN "Product" p ON p."categoryId" = c.id AND p."isActive" = true

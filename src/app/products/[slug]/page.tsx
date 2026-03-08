@@ -27,13 +27,43 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
     const [activeTab, setActiveTab] = useState<"description" | "specs">("description");
     const { addItem } = useCartStore();
 
+    const getDefaultAttributes = (productData: any) => {
+        if (!productData) return {};
+
+        const variants = productData.variants || [];
+        const productAttributes = productData.attributes || { Size: ["38 (M)", "40 (L)", "42 (XL)", "44 (XXL)"] };
+
+        // Prefer first in-stock variant so size/color shows by default
+        const defaultVariant = variants.find((v: any) => v.isActive !== false && (v.stock ?? 0) > 0)
+            || variants.find((v: any) => v.isActive !== false)
+            || variants[0];
+
+        if (defaultVariant?.attributes && typeof defaultVariant.attributes === "object") {
+            return defaultVariant.attributes;
+        }
+
+        // Fallback: choose first value from each attribute list
+        const defaults: Record<string, string> = {};
+        Object.entries(productAttributes).forEach(([key, values]) => {
+            if (Array.isArray(values) && values.length > 0) {
+                defaults[key] = String(values[0]);
+            }
+        });
+
+        return defaults;
+    };
+
     useEffect(() => {
         setIsLoading(true);
         api.products.get(slug)
             .then((res) => {
+                const productData = res.data?.product;
+                if (productData && !productData.attributes) {
+                    productData.attributes = { Size: ["38 (M)", "40 (L)", "42 (XL)", "44 (XXL)"] };
+                }
                 setData(res.data);
                 setSelectedImage(0);
-                setSelectedAttributes({});
+                setSelectedAttributes(getDefaultAttributes(productData));
             })
             .catch(() => setData(null))
             .finally(() => setIsLoading(false));
@@ -338,9 +368,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ slug: 
                                                     ? "1px solid rgba(99,102,241,0.6)"
                                                     : "1px solid var(--border)",
                                                 background: selectedAttributes[attrName] === val
-                                                    ? "var(--primary-glow)"
+                                                    ? "rgba(99,102,241,0.1)"
                                                     : "var(--bg-elevated)",
-                                                color: selectedAttributes[attrName] === val ? "#c4b5fd" : "var(--text-secondary)",
+                                                color: selectedAttributes[attrName] === val ? "var(--primary, #4f46e5)" : "var(--text-secondary)",
                                                 boxShadow: selectedAttributes[attrName] === val ? "0 0 0 3px rgba(99,102,241,0.1)" : "none",
                                             }}>
                                             {val}

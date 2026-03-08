@@ -43,10 +43,12 @@ export default function RegisterPage() {
         try {
             const res = await api.auth.register({ name: form.name, email: form.email, phone: form.phone, password: form.password });
             setAuth(res.data.user, res.data.token, res.data.refreshToken);
-            toast.success(`Welcome to WW Commerce, ${res.data.user.name}! 🎉`, {
+            toast.success(`Welcome to Moon IT Shop, ${res.data.user.name}! 🎉`, {
                 style: { background: "#FFFDFC", color: "#172B26", border: "1px solid rgba(46,105,85,0.35)" },
             });
-            router.push("/");
+            const params = new URLSearchParams(window.location.search);
+            const redirect = params.get("redirect");
+            router.push(redirect ? redirect : "/");
         } catch (err: any) {
             toast.error(err?.response?.data?.error || err.message || "Registration failed", {
                 style: { background: "#FFFDFC", color: "#172B26", border: "1px solid rgba(179,74,64,0.4)" },
@@ -80,19 +82,16 @@ export default function RegisterPage() {
                 {/* Logo */}
                 <div style={{ textAlign: "center", marginBottom: "28px" }}>
                     <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-                        <div style={{
-                            width: "44px", height: "44px", borderRadius: "14px",
-                            background: "linear-gradient(135deg, #6366f1, #a855f7)",
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                            boxShadow: "0 8px 24px rgba(99,102,241,0.45)",
-                        }}>
-                            <Zap size={22} color="white" />
-                        </div>
+                        <img
+                            src="/logo_transparent.png"
+                            alt="Moon IT Shop"
+                            style={{ width: "60px", height: "60px", objectFit: "contain" }}
+                        />
                         <span style={{
                             fontSize: "22px", fontWeight: 900,
                             background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
                             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
-                        }}>WW Commerce</span>
+                        }}>Moon IT Shop</span>
                     </Link>
                 </div>
 

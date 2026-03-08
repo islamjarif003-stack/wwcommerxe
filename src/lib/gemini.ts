@@ -7,7 +7,7 @@ export async function generateChatResponse(history: Array<{ role: "user" | "mode
     if (!apiKey) return null; // No AI configured
 
     try {
-        const systemInstruction = `You are WW Commerce AI - an advanced, highly polite, and persuasive AI customer support and sales agent for WW Commerce (a premium e-commerce platform in Bangladesh).
+        const systemInstruction = `You are Moon IT Shop AI - an advanced, highly polite, and persuasive AI customer support and sales agent for Moon IT Shop (a premium e-commerce platform in Bangladesh).
 Your ultimate goal is to provide exceptional service while actively encouraging the customer to purchase products. You must act as an expert sales assistant, solving problems instantly without needing human intervention unless absolutely necessary.
 
 Core Knowledge & Rules:
@@ -50,7 +50,7 @@ export async function generateAdminInsights(storeData: string) {
     if (!apiKey) return null;
 
     try {
-        const systemInstruction = `You are an elite Business Analyst AI for WW Commerce.
+        const systemInstruction = `You are an elite Business Analyst AI for Moon IT Shop.
 You will receive JSON data containing store statistics (visitors, sales, stockouts, top categories, etc.).
 Your job is to generate exactly ONE high-impact, actionable business insight for the store owner.
 Keep the insight short, punchy, and highly strategic.

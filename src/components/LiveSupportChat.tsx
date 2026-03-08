@@ -71,7 +71,7 @@ export default function LiveSupportChat() {
                     setMessages(data.data.messages || []);
                 }
             } catch (e) { }
-        }, 5000); // Check every 5s
+        }, 15000); // Check every 15s to save API limits
 
         return () => clearInterval(interval);
     }, [isOpen, sessionId, token]);
@@ -162,7 +162,7 @@ export default function LiveSupportChat() {
                                 padding: "12px 16px", borderRadius: "0 16px 16px 16px",
                                 color: "var(--text-primary)", fontSize: "13px", lineHeight: 1.5, maxWidth: "85%"
                             }}>
-                                👋 Hello! Welcome to WW Commerce support. How can we help you today?
+                                👋 Hello! Welcome to Moon IT Shop support. How can we help you today?
                             </div>
                         </div>
 

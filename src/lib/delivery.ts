@@ -1,5 +1,5 @@
 // ============================================================
-// WW Commerce OS – Bangladesh Delivery Zone Logic
+// Moon IT Shop OS – Bangladesh Delivery Zone Logic
 // ============================================================
 
 export const BANGLADESH_DISTRICTS = [

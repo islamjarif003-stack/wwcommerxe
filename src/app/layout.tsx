@@ -5,14 +5,14 @@ import { Toaster } from "react-hot-toast";
 import { LiveSupportWrapper } from "@/components/LiveSupportWrapper";
 
 export const metadata: Metadata = {
-  title: { default: "WW Commerce | Bangladesh's Smart Shopping Platform", template: "%s | WW Commerce" },
+  title: { default: "Moon IT Shop | Bangladesh's Smart Shopping Platform", template: "%s | Moon IT Shop" },
   description: "Premium ecommerce experience with AI-driven personalization, fast Bangladesh delivery, and exclusive deals.",
-  keywords: ["ecommerce", "bangladesh", "online shopping", "dhaka delivery", "WW Commerce"],
+  keywords: ["ecommerce", "bangladesh", "online shopping", "dhaka delivery", "Moon IT Shop"],
   openGraph: {
     type: "website",
     locale: "bn_BD",
     url: "https://wwcommerce.com",
-    siteName: "WW Commerce",
+    siteName: "Moon IT Shop",
   },
 };
 

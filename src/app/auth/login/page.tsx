@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Zap, ArrowRight, Shield, Mail, Lock } from "lucide-react";
+import { Eye, EyeOff, Zap, ArrowRight, Mail, Lock } from "lucide-react";
 import { useAuthStore } from "@/store/authStore";
 import { api } from "@/lib/apiClient";
 import toast from "react-hot-toast";
@@ -28,8 +28,10 @@ export default function LoginPage() {
                 toast.success(`Welcome back, ${res.data.user.name.split(" ")[0]}! 👋`, {
                     style: { background: "#FFFDFC", color: "#172B26", border: "1px solid rgba(46,105,85,0.35)" },
                 });
+                const params = new URLSearchParams(window.location.search);
+                const redirect = params.get("redirect");
                 const isAdmin = ["admin", "superadmin", "manager"].includes(res.data.user.role);
-                router.replace(isAdmin ? "/admin" : "/");
+                router.replace(redirect ? redirect : (isAdmin ? "/admin" : "/"));
             }
         } catch (err: any) {
             toast.error(err?.response?.data?.error || err?.message || "Invalid credentials", {
@@ -66,19 +68,16 @@ export default function LoginPage() {
                 {/* Logo */}
                 <div style={{ textAlign: "center", marginBottom: "32px" }}>
                     <Link href="/" style={{ display: "inline-flex", alignItems: "center", gap: "10px", textDecoration: "none" }}>
-                        <div style={{
-                            width: "44px", height: "44px", borderRadius: "14px",
-                            background: "linear-gradient(135deg, #6366f1, #a855f7)",
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                            boxShadow: "0 8px 24px rgba(99,102,241,0.45)",
-                        }}>
-                            <Zap size={22} color="white" />
-                        </div>
+                        <img
+                            src="/logo_transparent.png"
+                            alt="Moon IT Shop"
+                            style={{ width: "60px", height: "60px", objectFit: "contain" }}
+                        />
                         <span style={{
                             fontSize: "22px", fontWeight: 900,
                             background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
                             WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text",
-                        }}>WW Commerce</span>
+                        }}>Moon IT Shop</span>
                     </Link>
                 </div>
 
@@ -186,38 +185,6 @@ export default function LoginPage() {
                             )}
                         </button>
                     </form>
-
-                    {/* Demo credentials */}
-                    <div style={{
-                        marginTop: "20px", padding: "14px 16px",
-                        background: "rgba(99,102,241,0.06)",
-                        border: "1px solid rgba(99,102,241,0.15)",
-                        borderRadius: "12px",
-                    }}>
-                        <div style={{ display: "flex", alignItems: "center", gap: "6px", marginBottom: "8px" }}>
-                            <Shield size={13} color="#4f46e5" />
-                            <span style={{ fontSize: "11px", fontWeight: 700, color: "#4f46e5", textTransform: "uppercase", letterSpacing: "0.5px" }}>Demo Admin Account</span>
-                        </div>
-                        <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                            {[
-                                { k: "Email", v: "admin@wwcommerce.com" },
-                                { k: "Password", v: "Admin@1234" },
-                            ].map(item => (
-                                <div key={item.k} style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-                                    <span style={{ fontSize: "12px", color: "var(--text-muted)", minWidth: "58px" }}>{item.k}:</span>
-                                    <button onClick={() => {
-                                        if (item.k === "Email") setEmail(item.v);
-                                        else setPassword(item.v);
-                                    }} style={{
-                                        fontSize: "12px", color: "#4f46e5", fontFamily: "inherit",
-                                        background: "rgba(99,102,241,0.1)", border: "1px solid rgba(99,102,241,0.2)",
-                                        padding: "2px 8px", borderRadius: "5px", cursor: "pointer",
-                                        fontWeight: 600,
-                                    }}>{item.v}</button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
 
                     <p style={{ textAlign: "center", marginTop: "20px", fontSize: "13px", color: "var(--text-muted)" }}>
                         Don't have an account?{" "}

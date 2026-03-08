@@ -1,6 +1,6 @@
 /**
  * ══════════════════════════════════════════════════════════════
- *  WW Commerce AI Engine v2
+ *  Moon IT Shop AI Engine v2
  *  Rule-based ML-like intelligence using real PostgreSQL data
  *  No external API needed — 100% on-device analytics
  * ══════════════════════════════════════════════════════════════

@@ -28,6 +28,8 @@ function parseCSVLine(line: string): string[] {
 function normalizeCategoryText(input: string): string {
     return (input || "")
         .toLowerCase()
+        .replace(/men['’]?s|mens/g, "man")
+        .replace(/women['’]?s|womens/g, "woman")
         .replace(/&/g, "and")
         .replace(/[^a-z0-9]/g, "");
 }
@@ -50,6 +52,34 @@ function resolveCategory(
     const rawNorm = normalizeCategoryText(rawCat);
     const cleanedNorm = normalizeCategoryText(cleanedCatText);
     const codeNorm = normalizeCategoryText(rawCode);
+
+    const codeAliasToSlug: Record<string, string> = {
+        gen: "g",
+        general: "g",
+        m: "m",
+        mfas: "m",
+        mensfashion: "m",
+        mansfashion: "m",
+        w: "w",
+        wfas: "w",
+        womensfashion: "w",
+        womansfashion: "w",
+        cmbo: "cmbo",
+        combo: "cmbo",
+        couplecombo: "cmbo",
+    };
+
+    const rawAliasSlug = codeAliasToSlug[rawNorm] || codeAliasToSlug[cleanedNorm];
+    if (rawAliasSlug) {
+        const byAliasRaw = allCategories.find((c) => c.slug.toLowerCase() === rawAliasSlug);
+        if (byAliasRaw) return byAliasRaw;
+    }
+
+    const codeAliasSlug = codeAliasToSlug[codeNorm];
+    if (codeAliasSlug) {
+        const byAliasCode = allCategories.find((c) => c.slug.toLowerCase() === codeAliasSlug);
+        if (byAliasCode) return byAliasCode;
+    }
 
     // 1) Strong exact matching first (id / slug / name / normalized equality)
     const exact = allCategories.find((c) =>
@@ -118,8 +148,13 @@ const handler = async (req: AuthedRequest): Promise<NextResponse> => {
         });
 
         const categoryHint = allCategories
-            .slice(0, 10)
+            .slice(0, 20)
             .map((c: any) => `${c.name} (${c.slug})`)
+            .join(", ");
+
+        const categorySlugHint = allCategories
+            .slice(0, 20)
+            .map((c: any) => c.slug)
             .join(", ");
 
         for (let i = 0; i < dataRows.length; i++) {
@@ -146,7 +181,11 @@ const handler = async (req: AuthedRequest): Promise<NextResponse> => {
             const matchedCategory = resolveCategory(allCategories, rawCat, cleanedCatText, rawCode);
 
             if (!matchedCategory) {
-                errors.push(`Row ${i + 2}: Invalid category "${rawCat}". Use valid category ID, name, or slug. Examples: ${categoryHint}`);
+                if (allCategories.length === 0) {
+                    errors.push(`Row ${i + 2}: Invalid category "${rawCat}" because no categories exist in database. Create categories first in Admin > Categories.`);
+                } else {
+                    errors.push(`Row ${i + 2}: Invalid category "${rawCat}". Use valid category ID, name, or slug. Valid examples: ${categoryHint}. Valid slugs: ${categorySlugHint}`);
+                }
                 continue;
             }
 

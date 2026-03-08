@@ -101,21 +101,21 @@ export default function Navbar() {
                     }}>
                         {/* Logo */}
                         <Link href="/" style={{ display: "flex", alignItems: "center", gap: "10px", textDecoration: "none", flexShrink: 0 }}>
-                            <div style={{
-                                width: "34px", height: "34px", borderRadius: "8px",
-                                background: "var(--primary-light)",
-                                display: "flex", alignItems: "center", justifyContent: "center",
-                                boxShadow: "var(--shadow-sm)",
-                                transition: "all 0.3s ease",
-                            }}
-                                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "rotate(10deg) scale(1.1)"; }}
-                                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "rotate(0) scale(1)"; }}>
-                                <Zap size={16} color="var(--primary)" />
-                            </div>
+                            <img
+                                src="/logo_transparent.png"
+                                alt="Moon IT Shop"
+                                style={{
+                                    width: "44px", height: "44px", objectFit: "contain",
+                                    marginRight: "4px",
+                                    transition: "all 0.3s ease",
+                                }}
+                                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1.05)"; }}
+                                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = "scale(1)"; }}
+                            />
                             <span className="desktop-only" style={{
                                 fontSize: "17px", fontWeight: 900, letterSpacing: "-0.02em",
                                 color: "var(--text-primary)",
-                            }}>WW Commerce</span>
+                            }}>Moon IT Shop</span>
                         </Link>
 
                         {/* Desktop Nav */}

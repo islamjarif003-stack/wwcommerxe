@@ -33,6 +33,12 @@ async function apiFetch(endpoint: string, options: RequestInit = {}) {
     }
 
     if (!res.ok) {
+        if (res.status === 401) {
+            useAuthStore.getState().clearAuth();
+            if (typeof window !== "undefined") {
+                window.location.href = "/auth/login?redirect=" + encodeURIComponent(window.location.pathname);
+            }
+        }
         const reason = extractErrorMessage(data);
         throw new Error(`Request failed for ${endpoint} (${res.status}): ${reason}`);
     }
